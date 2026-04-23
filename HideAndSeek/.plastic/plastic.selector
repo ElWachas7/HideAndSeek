@@ -1,0 +1,4 @@
+repository "HideAndSeek/HideAndSeek@4673937314653@cloud"
+  path "/"
+    br "/main"
+    co "/main"
