@@ -7,9 +7,13 @@ public class HidingEnemyPatrolState : State<EntityStates>
     private HidingEnemy _entity;
     private int currentWP;
 
-    public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm) : base(sm)
+    private ObstacleAvoidance obstacleAvoidance;
+
+
+    public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
         _entity = entity;
+        obstacleAvoidance = obsAvoidance;
     }
     public override void Execute()
     {
@@ -19,12 +23,16 @@ public class HidingEnemyPatrolState : State<EntityStates>
     private void Patrol()
     {
         Transform targetWaypoint = _entity.WayPoints[currentWP];
+        
+        Vector3 dirToWaypoint = (targetWaypoint.position - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
 
-        _entity.transform.position = Vector3.MoveTowards(_entity.transform.position, targetWaypoint.position, _entity.Speed * Time.deltaTime);
+        Vector3 moveDir = obstacleAvoidance.GetDir(dirToWaypoint); // ObstacleAvoidance puede redirigir el movimiento si hay obstaculos
+
+        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion (posiblemente corregida)
 
         if (Vector3.Distance(_entity.transform.position, targetWaypoint.position) <= 0.5f)
         {
-            currentWP = (currentWP + 1) % _entity.WayPoints.Length; // va al siguiente waypoint
+            currentWP = (currentWP + 1) % _entity.WayPoints.Length;
             _sm.ChangeState(EntityStates.Idle);
         }
     }
