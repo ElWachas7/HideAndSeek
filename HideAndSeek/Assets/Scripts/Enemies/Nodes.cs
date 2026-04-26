@@ -72,6 +72,7 @@ public class SequenceNode : Nodes, ITreeNode
                 currentIndex = 0;
                 return NodeState.Failure;
             }
+            //Si es success entonces avanzamos al siguiente nodo
             currentIndex++;
         }
         currentIndex = 0;

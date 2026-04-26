@@ -13,7 +13,8 @@ public class ChaseEnemy : MonoBehaviour
     public Transform target;
     [Header("Patrol")]
     public List<Transform> patrolRoute;
-
+    private bool hasPatrolRoute;
+    [SerializeField] private float _cooldown;
     private QuestionNode root;
     void Start()
     {
@@ -55,6 +56,13 @@ public class ChaseEnemy : MonoBehaviour
     // ---- ACTION NODES ----
     private NodeState Idle()
     {
+        float currentTime = _cooldown;
+        while (currentTime <= 0) 
+        {
+            currentTime -= Time.deltaTime;
+            Lerp(transform.rotation.x, )
+
+        }
         return NodeState.Success;
     }
     private NodeState Chase() 
@@ -78,21 +86,24 @@ public class ChaseEnemy : MonoBehaviour
     }
     private NodeState Patrol()
     {
-        if (patrolRoute == null || patrolRoute.Count == 0)
+        if (hasPatrolRoute)
             return NodeState.Failure;
 
         Transform currentTarget = patrolRoute[0];
+        Vector3 dir = currentTarget.position - transform.position;
+        float dist = dir.magnitude;
 
-        if (Vector3.Distance(transform.position, patrolRoute[0].position) <= 0.5f)
+        if (dist <= 0.5f)
         {
             patrolRoute.RemoveAt(0);
             return NodeState.Success;
         }
-        else { return NodeState.Running; }
-            /*var dir = patrolRoute[patrolIndex].position - transform.position;
-        transform.position += dir.normalized * speed * Time.deltaTime;
-        stamina -= Time.deltaTime;*/
-        //return NodeState.Success;
+        else
+        {
+            transform.position += dir.normalized * speed * Time.deltaTime;
+        }
+
+        return NodeState.Running;
     }
 
     /*
