@@ -1,36 +1,52 @@
-
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static Nodes;
 
 [RequireComponent(typeof(LineOfSight))]
 public class ChaseEnemy : MonoBehaviour
 {
+    [Header("AI Sense")]
     private LineOfSight _los;
+    private int currentCorner = 0;
+    private Vector3[] corners;
+    public NavMeshAgent agent;
+    Transform target;
     [Header("Stats")]
-    public float stamina;
     public float speed;
-    public Transform target;
+    public Transform currentTarget;
+    public bool HasSeenEnemy;
+
     [Header("Patrol")]
     public List<Transform> patrolRoute;
-
+    private bool hasPatrolRoute;
+    private float idleTimer = 0f;
+    [SerializeField] float idleDuration = 2f;
     private QuestionNode root;
+
+
     void Start()
     {
-        
-        ActionNode idle = new ActionNode(Idle);
-        ActionNode patrol = new ActionNode(Patrol);
-        ActionNode chase = new ActionNode(Chase);
-        ActionNode moveToPosition = new ActionNode(MoveToLastPosition);
-        ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
 
-        var goPatrol = new SequenceNode(new List<ITreeNode>());
-        goPatrol.Add(patrol);
+        agent.updatePosition = false;
+        agent.updateRotation = false;
+
+        ActionNode idle = new ActionNode(Idle);
+        ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
+        ActionNode moveToTarget = new ActionNode(() => MoveToTarget(currentTarget));
+        ActionNode calculatePath = new ActionNode(() => CalculatePath(currentTarget));
+
+        SequenceNode goChase = new SequenceNode(new List<ITreeNode>());
+        goChase.Add(calculatePath);
+        goChase.Add(moveToTarget);
+
+        SequenceNode goPatrol = new SequenceNode(new List<ITreeNode>());
+        goPatrol.Add(calculatePath);
         goPatrol.Add(idle);
 
         QuestionNode hasPatrolRoute = new QuestionNode(HasAPatrolRoute,goPatrol,getPatrolRoute);
-        QuestionNode knownLastPosition = new QuestionNode(KnownLastPosition, moveToPosition, getPatrolRoute);
-        QuestionNode isInLos = new QuestionNode(IsInLos, chase, knownLastPosition);
+        QuestionNode knownLastPosition = new QuestionNode(KnownLastPosition, moveToTarget, getPatrolRoute);
+        QuestionNode isInLos = new QuestionNode(IsInLos, goChase, knownLastPosition);
 
         root = isInLos;
 
@@ -41,7 +57,7 @@ public class ChaseEnemy : MonoBehaviour
     }
 
     // ---- QUESTION NODES ----
-    private bool IsInLos() => _los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target);
+    private bool IsInLos() => _los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target) || HasSeenEnemy;
     private bool KnownLastPosition()
     {
         return true;
@@ -55,45 +71,81 @@ public class ChaseEnemy : MonoBehaviour
     // ---- ACTION NODES ----
     private NodeState Idle()
     {
-        return NodeState.Success;
-    }
-    private NodeState Chase() 
-    {
-        var dir = target.position - transform.position;
-        transform.position += dir.normalized * speed * Time.deltaTime;
-        stamina -= Time.deltaTime;
-        return NodeState.Success;
-        //Aplicar Seering Behaviour
+        idleTimer += Time.deltaTime;
 
+        float angle = Mathf.Sin(Time.time * 2f) * 30f;
+        transform.rotation = Quaternion.Euler(0, angle, 0);
+
+        if (idleTimer >= idleDuration)
+        {
+            idleTimer = 0f;
+            return NodeState.Success;
+        }
+
+        return NodeState.Running;
     }
     private NodeState GetPatrolRoute() 
     {
         //LISTA DE PUNTOS = GameManager.instance.GetPatrolRoute();
         return NodeState.Success;
     }
-    
-    private NodeState MoveToLastPosition()
+    private NodeState MoveToTarget(Transform target)
     {
-        return NodeState.Success;
-    }
-    private NodeState Patrol()
-    {
-        if (patrolRoute == null || patrolRoute.Count == 0)
+        if (corners == null || corners.Length == 0)
             return NodeState.Failure;
 
-        Transform currentTarget = patrolRoute[0];
+        Vector3 targetCorner = corners[currentCorner];
+        Vector3 dir = targetCorner - transform.position;
 
-        if (Vector3.Distance(transform.position, patrolRoute[0].position) <= 0.5f)
+        if (dir.magnitude < 0.2f)
         {
-            patrolRoute.RemoveAt(0);
+            currentCorner++;
+
+            if (currentCorner >= corners.Length)
+            {
+                return NodeState.Success;
+            }
+        }
+        else
+        {
+            transform.position += dir.normalized * speed * Time.deltaTime;
+        }
+
+        return NodeState.Running;
+    }
+    private NodeState CalculatePath(Transform target)
+    {
+        if (target == null) return NodeState.Failure;
+
+        NavMeshPath path = new NavMeshPath();   
+
+        if (NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path))
+        {
+            /*
+            if (path.corners.Length == 0)
+                return NodeState.Failure;*/
+
+            corners = path.corners;
+            currentCorner = 0;
+            Debug.Log("SI calculo un path");
             return NodeState.Success;
         }
-        else { return NodeState.Running; }
-            /*var dir = patrolRoute[patrolIndex].position - transform.position;
-        transform.position += dir.normalized * speed * Time.deltaTime;
-        stamina -= Time.deltaTime;*/
-        //return NodeState.Success;
+        Debug.Log("no calculo ningun path");
+        return NodeState.Failure;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     private void Seek()

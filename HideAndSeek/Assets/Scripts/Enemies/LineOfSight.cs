@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LineOfSight : MonoBehaviour
@@ -7,7 +6,6 @@ public class LineOfSight : MonoBehaviour
     public float range;
     public float angle;
     public LayerMask obsMask;
-    public Transform target;
     public bool CheckRange(Transform target)
     {
         float distanceToTarget = (target.position - transform.position).sqrMagnitude; //Vector3.Distance(target.position, Origin);
@@ -33,7 +31,7 @@ public class LineOfSight : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, range);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, angle / 2, 0) * target.position * range);
-        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -angle / 2, 0) * target.position * range);
+        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, angle / 2, 0) * transform.forward * range);
+        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -angle / 2, 0) * transform.forward * range);
     }
 }
