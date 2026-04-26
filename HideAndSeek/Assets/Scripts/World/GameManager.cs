@@ -28,6 +28,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ResetHidingSpots();
+    }
+
     public void ChangeState(GameState newState)
     {
         currentState = newState;
@@ -99,15 +104,35 @@ public class GameManager : MonoBehaviour
             LoseGame();
         }
     }
+
+    private void ResetHidingSpots()
+    {
+        foreach (var spot in hidingSpots)
+        {
+            spot.isTaken = false;
+        }
+    }
+  
     public HidingSpot GetHidingSpot()
     {
         Dictionary<HidingSpot, float> dict = new Dictionary<HidingSpot, float>();
 
         foreach (HidingSpot spot in hidingSpots)
         {
+            if (spot.isTaken)
+                continue;
             dict.Add(spot, spot.chance);
         }
-        return MyRandom.RouletteWheelSelection(dict);
+
+        HidingSpot selectedSpot = MyRandom.RouletteWheelSelection(dict);
+       
+        if (selectedSpot != null)
+        {
+            selectedSpot.isTaken = true;
+            Debug.Log("Spot elegido: " + selectedSpot.position.name);
+        }
+
+        return selectedSpot;
     }
 
     public MyPath GetPath()

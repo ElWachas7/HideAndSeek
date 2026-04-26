@@ -10468,7 +10468,86 @@ MonoBehaviour:
   hidingEnemies: []
   hidingSpots:
   - position: {fileID: 1435225031}
-    chance: 10
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 339272522}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 13707927}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 718869322}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1964692843}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1092271346}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1012063755}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 213542085}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1767615998}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 2070993058}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 491103147}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1468416067}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 551963634}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1024162585}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 990781689}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1108783144}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 2089562016}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1878867919}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 187587045}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 407165982}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1423501122}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 2037627024}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 998576015}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 39440679}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 917730983}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 2069314662}
+    chance: 50
+    isTaken: 0
+  - position: {fileID: 1656449993}
+    chance: 50
+    isTaken: 0
 --- !u!4 &1217241859
 Transform:
   m_ObjectHideFlags: 0
