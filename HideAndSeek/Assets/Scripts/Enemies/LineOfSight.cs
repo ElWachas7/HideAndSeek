@@ -29,10 +29,10 @@ public class LineOfSight : MonoBehaviour
         Color myColor = Color.blue;
         myColor.a = 0.5f;
         Gizmos.color = myColor;
-        Gizmos.DrawWireSphere(Origin, range);
+        //Gizmos.DrawWireSphere(Origin, range);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(Origin, Quaternion.Euler(0, angle / 2, 0) * Forward * range);
-        Gizmos.DrawRay(Origin, Quaternion.Euler(0, -angle / 2, 0) * Forward * range);
+        //Gizmos.DrawRay(Origin, Quaternion.Euler(0, angle / 2, 0) * Forward * range);
+        //Gizmos.DrawRay(Origin, Quaternion.Euler(0, -angle / 2, 0) * Forward * range);
     }
 }

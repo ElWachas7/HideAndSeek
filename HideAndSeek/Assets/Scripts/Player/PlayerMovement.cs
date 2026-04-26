@@ -12,10 +12,7 @@ public class PlayerMovement : MonoBehaviour
     //hacer la stateMachine
     void Start()
     {
-        if (recharging)
-            Idle();
-        else
-            Movement();
+        Idle();
     }
     //detectar el input
     //
@@ -26,7 +23,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Movement();
+        ManageStamina();
+
+        if (recharging)
+            Idle();
+        else
+            Movement();
     }
 
     void Movement()
@@ -34,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
 
         GetComponent<Rigidbody>().velocity = new Vector3(movementInputs.x, 0 , movementInputs.y) * speed;
         stamina -= Time.deltaTime;
+
     }
     void ManageStamina()
     {
