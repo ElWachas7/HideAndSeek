@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public event Action OnGameWin;
 
     public List<HidingEnemy> hidingEnemies;
-    public List<Transform> hidingSpots;
+    public List<HidingSpot> hidingSpots;
 
     void Awake()
     {
@@ -99,5 +99,27 @@ public class GameManager : MonoBehaviour
             LoseGame();
         }
     }
+    public HidingSpot GetHidingSpot()
+    {
+        Dictionary<HidingSpot, float> dict = new Dictionary<HidingSpot, float>();
 
+        foreach (HidingSpot spot in hidingSpots)
+        {
+            dict.Add(spot, spot.chance);
+        }
+        return MyRandom.RouletteWheelSelection(dict);
+    }
+
+    public MyPath GetPath()
+    {
+        Dictionary<MyPath, float> dict = new Dictionary<MyPath, float>();
+
+        foreach (MyPath path in paths)
+        {
+            float chance = path.chance;
+            dict.Add(path, chance);
+        }
+
+        return MyRandom.RouletteWheelSelection(dict);
+    }
 }
