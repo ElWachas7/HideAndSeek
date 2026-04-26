@@ -1,17 +1,18 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
+using static Nodes;
 
 [RequireComponent(typeof(LineOfSight))]
 public class ChaseEnemy : MonoBehaviour
 {
     private LineOfSight _los;
-    public Transform target;
+    [Header("Stats")]
     public float stamina;
     public float speed;
-    private bool recharging;
-    public Transform[] wayPoints;
-    private int currentWP = 0;
+    public Transform target;
+    [Header("Patrol")]
+    public List<Transform> patrolRoute;
 
     private QuestionNode root;
     void Start()
@@ -19,55 +20,106 @@ public class ChaseEnemy : MonoBehaviour
         
         ActionNode idle = new ActionNode(Idle);
         ActionNode patrol = new ActionNode(Patrol);
-        ActionNode follow = new ActionNode(Follow);
+        ActionNode chase = new ActionNode(Chase);
+        ActionNode moveToPosition = new ActionNode(MoveToLastPosition);
+        ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
 
-        QuestionNode isInLos = new QuestionNode(IsInLos, follow, patrol);
-        //QuestionNode isRecharging = new QuestionNode(IsRecharging, idle, isInLos);
+        var goPatrol = new SequenceNode(new List<ITreeNode>());
+        goPatrol.Add(patrol);
+        goPatrol.Add(idle);
 
-       // root = isRecharging;
-        
+        QuestionNode hasPatrolRoute = new QuestionNode(HasAPatrolRoute,goPatrol,getPatrolRoute);
+        QuestionNode knownLastPosition = new QuestionNode(KnownLastPosition, moveToPosition, getPatrolRoute);
+        QuestionNode isInLos = new QuestionNode(IsInLos, chase, knownLastPosition);
+
+        root = isInLos;
+
     }
     void Update()
     {
         root.Execute();
-        /*if (recharging)
-        {
-            Idle();
-        }
-        else
-        {
-            if (_los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target))
-                Follow();
-            else
-                Patrol();
-        }*/
-
     }
 
+    // ---- QUESTION NODES ----
     private bool IsInLos() => _los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target);
-
-    private void Idle()
+    private bool KnownLastPosition()
     {
-        
+        return true;
     }
-    private void Follow()
+    private bool HasAPatrolRoute() 
+    {
+        //Get a patrol Route
+        return true;
+    }
+
+    // ---- ACTION NODES ----
+    private NodeState Idle()
+    {
+        return NodeState.Success;
+    }
+    private NodeState Chase() 
     {
         var dir = target.position - transform.position;
         transform.position += dir.normalized * speed * Time.deltaTime;
         stamina -= Time.deltaTime;
-
+        return NodeState.Success;
         //Aplicar Seering Behaviour
 
     }
-    private void Patrol()
+    private NodeState GetPatrolRoute() 
     {
-        if (Vector3.Distance(transform.position, wayPoints[currentWP].position) <= 0.5f)
-        {
-            currentWP = (currentWP + 1) % wayPoints.Length;
-        }
-        var dir = wayPoints[currentWP].position - transform.position;
-        transform.position += dir.normalized * speed * Time.deltaTime;
-        stamina -= Time.deltaTime;
-
+        //LISTA DE PUNTOS = GameManager.instance.GetPatrolRoute();
+        return NodeState.Success;
     }
+    
+    private NodeState MoveToLastPosition()
+    {
+        return NodeState.Success;
+    }
+    private NodeState Patrol()
+    {
+        if (patrolRoute == null || patrolRoute.Count == 0)
+            return NodeState.Failure;
+
+        Transform currentTarget = patrolRoute[0];
+
+        if (Vector3.Distance(transform.position, patrolRoute[0].position) <= 0.5f)
+        {
+            patrolRoute.RemoveAt(0);
+            return NodeState.Success;
+        }
+        else { return NodeState.Running; }
+            /*var dir = patrolRoute[patrolIndex].position - transform.position;
+        transform.position += dir.normalized * speed * Time.deltaTime;
+        stamina -= Time.deltaTime;*/
+        //return NodeState.Success;
+    }
+
+    /*
+    private void Seek()
+    {
+        var desired_velocity = (target.transform.position - transform.position).NoY().normalized * max_speed;
+        var steering = desired_velocity - currentSpeed;
+
+        currentSpeed += steering * Time.deltaTime;
+    }
+    private void Flee()
+    {
+        var desired_velocity = (transform.position - target.transform.position).NoY().normalized * max_speed;
+        var steering = desired_velocity - currentSpeed;
+
+        currentSpeed += steering * Time.deltaTime;
+    }
+
+    private void Persuit()
+    {
+        var future_position = target.transform.position + target.Speed * timePrediction;
+
+
+        var desired_velocity = (future_position - transform.position).NoY().normalized * max_speed;
+        var steering = desired_velocity - currentSpeed;
+
+        currentSpeed += steering * Time.deltaTime;
+    }
+    */
 }

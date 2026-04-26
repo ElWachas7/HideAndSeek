@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Nodes;
 
-public interface ITreeNode
-{ 
-    void Execute();
-
+public interface ITreeNode  
+{
+    NodeState Execute();
 }

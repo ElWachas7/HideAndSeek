@@ -3,24 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using TreeEditor;
 using UnityEngine;
+using static Nodes;
 
-public class Nodes : MonoBehaviour
+public class Nodes
 {
-    
+    public enum NodeState
+    {
+        Success,
+        Failure,
+        Running
+    }
 }
 
-public class ActionNode : ITreeNode
+public class ActionNode : Nodes, ITreeNode
 {
-    private Action action;
+    private Func<NodeState> action;
 
-    public ActionNode(Action action)
+    public ActionNode(Func<NodeState> action)
     {
         this.action = action;
     }
-
-    public void Execute()
+    public NodeState Execute()
     {
-        action?.Invoke();
+        return action != null ? action() : NodeState.Failure;
     }
 }
 
@@ -36,11 +41,45 @@ public class QuestionNode : ITreeNode
         this.trueNode = trueNode;
         this.flaseNode = falseNode;
     }
-    public void Execute()
+    public NodeState Execute()
     {
         if (question.Invoke())
-            trueNode.Execute();
+            return trueNode.Execute();
         else
-            flaseNode.Execute();
+            return flaseNode.Execute();
     }
 }
+
+public class SequenceNode : Nodes, ITreeNode
+{
+    private List<ITreeNode> sequence;
+    private int currentIndex = 0;
+    public SequenceNode(List<ITreeNode> sequence)
+    {
+        this.sequence = sequence;
+    }
+    public NodeState Execute()
+    {
+        while (currentIndex < sequence.Count)
+        {
+            var state = sequence[currentIndex].Execute();
+
+            if (state == NodeState.Running)
+                return NodeState.Running;
+
+            if (state == NodeState.Failure)
+            {
+                currentIndex = 0;
+                return NodeState.Failure;
+            }
+            currentIndex++;
+        }
+        currentIndex = 0;
+        return NodeState.Success;
+    }
+    public void Add(ITreeNode node)
+    {
+        sequence.Add(node);
+    }
+}
+
