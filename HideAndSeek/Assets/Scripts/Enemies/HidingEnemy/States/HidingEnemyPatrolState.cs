@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class HidingEnemyPatrolState : State<EntityStates>
 {
-    private SimpleFSM _entity;
+    private HidingEnemy _entity;
     private int currentWP;
 
-    public HidingEnemyPatrolState(SimpleFSM entity, StateMachine<EntityStates> sm) : base(sm)
+    public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm) : base(sm)
     {
         _entity = entity;
     }

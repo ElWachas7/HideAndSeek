@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -736,14 +736,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 157851203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34bcd260131dbf14aa51397b6a9ea6fc, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c81b820f8a829649871a040d036210c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   wayPoints:
   - {fileID: 2078132221}
   - {fileID: 775124328}
-  speed: 2.46
+  speed: 1.5
   viewLos: {fileID: 157851209}
 --- !u!1 &167100446
 GameObject:

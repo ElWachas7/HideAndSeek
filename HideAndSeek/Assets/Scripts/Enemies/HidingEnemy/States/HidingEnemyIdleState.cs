@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class HidingEnemyIdleState : State<EntityStates>
 {
-    private SimpleFSM _entity;
+    private HidingEnemy _entity;
     private float _timer;
 
-    public HidingEnemyIdleState(SimpleFSM entity, StateMachine<EntityStates> sm) : base(sm)
+    public HidingEnemyIdleState(HidingEnemy entity, StateMachine<EntityStates> sm) : base(sm)
     {
         _entity = entity;
     }

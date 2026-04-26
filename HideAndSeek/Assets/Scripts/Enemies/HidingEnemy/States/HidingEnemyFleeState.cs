@@ -4,7 +4,7 @@ using UnityEngine;
 
 //public class HidingEnemyFleeState : EntityStates
 //{
-//    private SimpleFSM _entity;
+//    private HidingEnemy _entity;
 
 //    public EntityFleeState
 //}
