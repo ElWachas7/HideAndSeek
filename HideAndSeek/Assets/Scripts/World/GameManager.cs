@@ -1,14 +1,20 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public List<MyPath> paths = new List<MyPath>();
     public static GameManager Instance;
-    public enum GameState { Menu, Playing, Paused, Won, Lost, Resumed}
+    public enum GameState { Menu, Playing, Paused, Won, Lost, Resumed }
     [SerializeField] private GameState currentState;
     public bool IsAlive => isAlive;
     private bool isAlive;
     public event Action OnGameOver;
+    public event Action OnGameWin;
+
+    public List<HidingEnemy> hidingEnemies;
+    public List<Transform> hidingSpots;
 
     void Awake()
     {
@@ -71,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
     {
+        OnGameWin.Invoke();
         ChangeState(GameState.Won);
     }
 
@@ -87,9 +94,10 @@ public class GameManager : MonoBehaviour
 
     public void CheckState()
     {
-        if(!isAlive)
+        if (!isAlive)
         {
             LoseGame();
         }
     }
+
 }

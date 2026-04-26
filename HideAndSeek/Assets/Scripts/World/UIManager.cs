@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     {
         OnMainMenu();
         GameManager.Instance.OnGameOver += OnLose;
+        GameManager.Instance.OnGameWin += OnWin;
     }
 
     private void Update()
@@ -38,8 +39,15 @@ public class UIManager : MonoBehaviour
         inGameUI.gameObject.SetActive(false);
     }
 
+    private void ClearEvents()
+    {
+        GameManager.Instance.OnGameOver -= OnLose;
+        GameManager.Instance.OnGameWin -= OnWin;
+    }
+
     public void OnMainMenu()
     {
+        ClearEvents();
         ClearUI();
         GameManager.Instance.MainMenu();
         menuUI.gameObject.SetActive(true);
@@ -69,7 +77,6 @@ public class UIManager : MonoBehaviour
     public void OnWin()
     {
         ClearUI();
-        GameManager.Instance.WinGame();
         winUI.gameObject.SetActive(true);
     }
 
