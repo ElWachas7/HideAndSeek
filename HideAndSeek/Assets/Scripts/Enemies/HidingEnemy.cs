@@ -8,10 +8,10 @@ public enum EntityStates
     Patrol,
     Flee
 }
-public class HidingEnemy : MonoBehaviour
+public class HidingEnemy : MonoBehaviour, ISteering
 {
     [Header("Movement")]
-    [SerializeField] Transform target;
+    [SerializeField] ChaseEnemy target;
     [SerializeField] Transform[] wayPoints;
     [SerializeField] float speed;
     [SerializeField] private LineOfSight viewLos;
@@ -22,7 +22,7 @@ public class HidingEnemy : MonoBehaviour
     [SerializeField] private float obsPersonalArea;
     [SerializeField] private LayerMask obsMask;
 
-    public Transform Target => target;
+    public ChaseEnemy Target => target;
     public Transform[] WayPoints => wayPoints;
     public float Speed => speed;
     public LineOfSight ViewLos => viewLos;
@@ -37,11 +37,11 @@ public class HidingEnemy : MonoBehaviour
 
         var idle = new HidingEnemyIdleState(this, _sm);
         var patrol = new HidingEnemyPatrolState(this, _sm, obstacleAvoidance);
-        //var flee = new HidingEnemyFleeState(this, _sm);
+        var flee = new HidingEnemyFleeState(this, _sm, obstacleAvoidance);
 
         _sm.AddState(idle, EntityStates.Idle);
         _sm.AddState(patrol, EntityStates.Patrol);
-        //_sm.AddState(flee, EntityStates.Flee);
+        _sm.AddState(flee, EntityStates.Flee);
 
         _sm.Initialize(patrol);
 
@@ -52,6 +52,9 @@ public class HidingEnemy : MonoBehaviour
         {
             _sm.Update();
         }
+
+        //viewLos
+
     }
 
     private void OnDrawGizmos()
@@ -67,5 +70,15 @@ public class HidingEnemy : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, obsAngle / 2, 0) * transform.forward * obsRadius);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -obsAngle / 2, 0) * transform.forward * obsRadius);
+    }
+
+    public void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector3 GetDir(Vector3 currentDirection)
+    {
+        throw new System.NotImplementedException();
     }
 }
