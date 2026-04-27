@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public event Action OnGameWin;
 
     public List<HidingEnemy> hidingEnemies;
-    public List<Transform> hidingSpots;
+    public List<HidingSpot> hidingSpots;
 
     void Awake()
     {
@@ -26,6 +26,11 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        ResetHidingSpots();
     }
 
     public void ChangeState(GameState newState)
@@ -100,4 +105,46 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void ResetHidingSpots()
+    {
+        foreach (var spot in hidingSpots)
+        {
+            spot.isTaken = false;
+        }
+    }
+  
+    public HidingSpot GetHidingSpot()
+    {
+        Dictionary<HidingSpot, float> dict = new Dictionary<HidingSpot, float>();
+
+        foreach (HidingSpot spot in hidingSpots)
+        {
+            if (spot.isTaken)
+                continue;
+            dict.Add(spot, spot.chance);
+        }
+
+        HidingSpot selectedSpot = MyRandom.RouletteWheelSelection(dict);
+       
+        if (selectedSpot != null)
+        {
+            selectedSpot.isTaken = true;
+            Debug.Log("Spot elegido: " + selectedSpot.position.name);
+        }
+
+        return selectedSpot;
+    }
+
+    public MyPath GetPath()
+    {
+        Dictionary<MyPath, float> dict = new Dictionary<MyPath, float>();
+
+        foreach (MyPath path in paths)
+        {
+            float chance = path.chance;
+            dict.Add(path, chance);
+        }
+
+        return MyRandom.RouletteWheelSelection(dict);
+    }
 }
