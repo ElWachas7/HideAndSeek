@@ -24,7 +24,8 @@ public class HidingEnemyPatrolState : State<EntityStates>
 
         if (Vector3.Distance(_entity.transform.position, targetWaypoint.position) <= 0.5f)
         {
-            currentWP = (currentWP + 1) % _entity.WayPoints.Length;
+            currentWP = (currentWP + 1) % _entity.WayPoints.Length; // va al siguiente waypoint
+            _sm.ChangeState(EntityStates.Idle);
         }
     }
 
