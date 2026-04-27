@@ -4,12 +4,12 @@ using UnityEngine.Windows;
 
 public class State<T> : IState<T>
 {
-    protected StateMachine<T> _sm;
+    protected StateMachine<T> stateMachine;
     private Dictionary<T, IState<T>> transitions;
 
     public State(StateMachine<T> sm)
     {
-        _sm = sm;
+        stateMachine = sm;
         transitions = new Dictionary<T, IState<T>>();
     }
 
@@ -29,10 +29,12 @@ public class State<T> : IState<T>
 
     public IState<T> GetTransition(T input)
     {
-        if (transitions.ContainsKey(input))
+        //Chequea la existencia del input y devuelve un valor, en este caso sería el estado del jugador: Existe move? si, entonces te devuelvo el estado en concreto.
+        if (transitions.TryGetValue(input, out IState<T> nextState))
         {
-            return transitions[input];
+            return nextState;
         }
+
         return null;
     }
 

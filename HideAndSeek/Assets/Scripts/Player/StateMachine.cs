@@ -22,13 +22,22 @@ public class StateMachine<T>
 
     public void Update() => currentState.Execute();
 
-    public void ChangeState(T newState)
+    public void ChangeState(T input)
     {
-        if (states.TryGetValue(newState, out IState<T> stateValue))
+        //Chequea si el estado actual es un dato tipo STATE
+        if(currentState is State<T> stateWithTransitions)
         {
-            currentState.Sleep();
-            currentState = stateValue;
-            currentState.Awake();
+            //En caso de serlo, se crea una variable que toma la transición del input con su siguiente estado. Ej; idle -> move / move -> idle
+            IState<T> nextState = stateWithTransitions.GetTransition(input);
+            //luego chequea si es nulo
+            if (nextState != null)
+            {
+                //En caso de no serlo, duerme al actual (lo 'apaga') lo actualiza (idle -> move) y lo hace funcionar
+                currentState.Sleep();
+                currentState = nextState;
+                currentState.Awake();
+            }
         }
+       
     }
 }

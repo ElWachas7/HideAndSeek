@@ -6,6 +6,7 @@ public class PlayerBehaviour: MonoBehaviour
 {
     public float speed = 3f;
     public float maxStamina = 10f;
+    public float minStamina = 2.0f;
 
     [HideInInspector] public float currentStamina;
     //si el booleano no está seteado, por default es FALSO
@@ -35,13 +36,11 @@ public class PlayerBehaviour: MonoBehaviour
         move.AddTransition(idle, PlayerStates.Idle);
 
         sm.SetCurrent(idle);
-        sm.CurrentState.Awake();
     }
 
     void Update()
     {
         movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Debug.Log(currentStamina);
     }
 
     private void FixedUpdate()
@@ -57,7 +56,7 @@ public class PlayerBehaviour: MonoBehaviour
         {
             isRecharging = true;
         }
-        else if (currentStamina >= maxStamina)
+        else if (currentStamina >= minStamina)
         {
             isRecharging = false;
         }

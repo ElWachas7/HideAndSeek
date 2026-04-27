@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerIdleState : PlayerState
 {
@@ -13,15 +12,16 @@ public class PlayerIdleState : PlayerState
 
     public override void Execute()
     {
-        //base.Execute();
 
         player.rb.velocity = Vector3.zero;
 
-        player.currentStamina += Time.deltaTime;
-
         if (player.movementInput.magnitude > 0.1f && !player.isRecharging)
         {
-            _sm.ChangeState(PlayerStates.Move);
+            stateMachine.ChangeState(PlayerStates.Move);
+        }
+        else if (player.currentStamina <= player.maxStamina)
+        {
+            player.currentStamina += Time.fixedDeltaTime * 2;
         }
     }
 }
