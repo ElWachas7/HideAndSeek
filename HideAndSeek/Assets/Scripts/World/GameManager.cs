@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         if (selectedSpot != null)
         {
             selectedSpot.isTaken = true;
-            Debug.Log("Spot elegido: " + selectedSpot.position.name);
+            Debug.Log("Spot elegido: " + selectedSpot.Transform.name);
         }
 
         return selectedSpot;

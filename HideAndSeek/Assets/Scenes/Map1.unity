@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4435797, g: 0.492894, b: 0.5724745, a: 1}
+  m_IndirectSpecularColor: {r: 0.44357935, g: 0.49289364, b: 0.5724737, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10467,85 +10467,88 @@ MonoBehaviour:
   currentState: 0
   hidingEnemies: []
   hidingSpots:
-  - position: {fileID: 1435225031}
+  - Transform: {fileID: 1435225031}
     chance: 50
     isTaken: 0
-  - position: {fileID: 339272522}
+  - Transform: {fileID: 933942562}
     chance: 50
     isTaken: 0
-  - position: {fileID: 13707927}
+  - Transform: {fileID: 339272522}
     chance: 50
     isTaken: 0
-  - position: {fileID: 718869322}
+  - Transform: {fileID: 13707927}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1964692843}
+  - Transform: {fileID: 718869322}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1092271346}
+  - Transform: {fileID: 1964692843}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1012063755}
+  - Transform: {fileID: 1092271346}
     chance: 50
     isTaken: 0
-  - position: {fileID: 213542085}
+  - Transform: {fileID: 1012063755}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1767615998}
+  - Transform: {fileID: 213542085}
     chance: 50
     isTaken: 0
-  - position: {fileID: 2070993058}
+  - Transform: {fileID: 1767615998}
     chance: 50
     isTaken: 0
-  - position: {fileID: 491103147}
+  - Transform: {fileID: 2070993058}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1468416067}
+  - Transform: {fileID: 491103147}
     chance: 50
     isTaken: 0
-  - position: {fileID: 551963634}
+  - Transform: {fileID: 1468416067}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1024162585}
+  - Transform: {fileID: 551963634}
     chance: 50
     isTaken: 0
-  - position: {fileID: 990781689}
+  - Transform: {fileID: 1024162585}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1108783144}
+  - Transform: {fileID: 990781689}
     chance: 50
     isTaken: 0
-  - position: {fileID: 2089562016}
+  - Transform: {fileID: 1108783144}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1878867919}
+  - Transform: {fileID: 2089562016}
     chance: 50
     isTaken: 0
-  - position: {fileID: 187587045}
+  - Transform: {fileID: 1878867919}
     chance: 50
     isTaken: 0
-  - position: {fileID: 407165982}
+  - Transform: {fileID: 187587045}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1423501122}
+  - Transform: {fileID: 407165982}
     chance: 50
     isTaken: 0
-  - position: {fileID: 2037627024}
+  - Transform: {fileID: 1423501122}
     chance: 50
     isTaken: 0
-  - position: {fileID: 998576015}
+  - Transform: {fileID: 2037627024}
     chance: 50
     isTaken: 0
-  - position: {fileID: 39440679}
+  - Transform: {fileID: 998576015}
     chance: 50
     isTaken: 0
-  - position: {fileID: 917730983}
+  - Transform: {fileID: 39440679}
     chance: 50
     isTaken: 0
-  - position: {fileID: 2069314662}
+  - Transform: {fileID: 917730983}
     chance: 50
     isTaken: 0
-  - position: {fileID: 1656449993}
+  - Transform: {fileID: 2069314662}
+    chance: 50
+    isTaken: 0
+  - Transform: {fileID: 1656449993}
     chance: 50
     isTaken: 0
 --- !u!4 &1217241859

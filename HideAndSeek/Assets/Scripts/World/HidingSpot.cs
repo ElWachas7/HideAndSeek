@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class HidingSpot
 {
-    public Transform position;
+    public Transform Transform;
     public float chance;
     public bool isTaken;
 }

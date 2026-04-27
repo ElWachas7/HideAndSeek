@@ -9,36 +9,49 @@ public class HidingEnemyPatrolState : State<EntityStates>
 
     private ObstacleAvoidance obstacleAvoidance;
 
+    private HidingSpot newHidingSpot;
 
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
         _entity = entity;
         obstacleAvoidance = obsAvoidance;
+        
+        
+        newHidingSpot = GameManager.Instance.GetHidingSpot();
+        Debug.Log("set first hiding spot");
+        if (newHidingSpot == null)
+        {
+            // No hay spots disponibles, volver a Idle
+            _sm.ChangeState(EntityStates.Idle);
+        }
     }
     public override void Execute()
     {
         base.Execute();
-        Patrol();
+        if (newHidingSpot != null)
+        Patrol(); 
     }
     private void Patrol()
     {
-        Transform targetWaypoint = _entity.WayPoints[currentWP];
-        
-        Vector3 dirToWaypoint = (targetWaypoint.position - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
+        //Transform targetWaypoint = _entity.WayPoints[currentWP];
+
+        Vector3 targetWaypoint = newHidingSpot.Transform.position;
+
+        Vector3 dirToWaypoint = (targetWaypoint - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
 
         Vector3 moveDir = obstacleAvoidance.GetDir(dirToWaypoint); // ObstacleAvoidance puede redirigir el movimiento si hay obstaculos
 
         Quaternion rotation = Quaternion.LookRotation(moveDir);
         _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime);
-        //_entity.transform.position += _entity.transform.forward * _entity.Speed * Time.deltaTime;
 
-        
+        //_entity.transform.position += _entity.transform.forward * _entity.Speed * Time.deltaTime;
 
         _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion (posiblemente corregida)
 
-        if (Vector3.Distance(_entity.transform.position, targetWaypoint.position) <= 0.5f)
+        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 0.5f)
         {
-            currentWP = (currentWP + 1) % _entity.WayPoints.Length;
+            newHidingSpot = GameManager.Instance.GetHidingSpot();
+            //currentWP = (currentWP + 1) % _entity.WayPoints.Length;
             _sm.ChangeState(EntityStates.Idle);
         }
     }
