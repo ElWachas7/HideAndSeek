@@ -25,7 +25,6 @@ public class HidingEnemyPatrolState : State<EntityStates>
     public override void Awake()
     {
         //base.Awake();
-        Debug.Log("ejecuta awake de patrol");
         SetNewHidingSpot();
     }
     public override void Execute()
@@ -38,7 +37,6 @@ public class HidingEnemyPatrolState : State<EntityStates>
     {
         newHidingSpot = null;
         newHidingSpot = GameManager.Instance.GetHidingSpot().Transform;
-        Debug.Log("set new hiding spot");
         if (newHidingSpot == null)
         {
             // no hay spots disponibles, volver a idle
@@ -53,7 +51,6 @@ public class HidingEnemyPatrolState : State<EntityStates>
         }
         else
         {
-            Debug.LogWarning("no se pudo calcular un path al hiding spot");
             _sm.ChangeState(EntityStates.Idle);
         }
 

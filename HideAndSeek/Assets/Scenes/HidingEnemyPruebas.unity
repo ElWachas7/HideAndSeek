@@ -14401,11 +14401,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
---- !u!4 &1152286726 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1473561230702458528, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
-  m_PrefabInstance: {fileID: 1152286725}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1153773527
 GameObject:
   m_ObjectHideFlags: 0
@@ -19834,6 +19829,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1647767101}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1652377418 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2303516634916751579, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
+  m_PrefabInstance: {fileID: 1152286725}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141b10835bfa0dc4c8835d5201a484b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1660239201
 GameObject:
   m_ObjectHideFlags: 0
@@ -25246,7 +25252,7 @@ PrefabInstance:
     - target: {fileID: 5998683012965199830, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
       propertyPath: target
       value: 
-      objectReference: {fileID: 1152286726}
+      objectReference: {fileID: 1652377418}
     - target: {fileID: 5998683012965199830, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
       propertyPath: wayPoints.Array.data[0]
       value: 

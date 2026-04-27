@@ -9,8 +9,15 @@ public class HidingEnemyFleeState : State<EntityStates>
 
     public HidingEnemyFleeState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
-        
+        _entity = entity;
+        obstacleAvoidance = obsAvoidance;
     }
-
-
+    public override void Awake()
+    {
+        base.Awake();
+    }
+    public override void Execute()
+    {
+        base.Execute();
+    }
 }

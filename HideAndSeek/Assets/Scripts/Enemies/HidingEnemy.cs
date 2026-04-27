@@ -30,8 +30,12 @@ public class HidingEnemy : MonoBehaviour, ISteering
 
     private StateMachine<EntityStates> _sm;
 
+    private bool hasSeenTarget;
+    private float losTimer = 0f;
+
     void Start()
     {
+        viewLos = GetComponent<LineOfSight>();
         _sm = new StateMachine<EntityStates>();
         var obstacleAvoidance = new ObstacleAvoidance(transform, obsRadius, obsAngle, obsPersonalArea, obsMask);
 
@@ -52,9 +56,27 @@ public class HidingEnemy : MonoBehaviour, ISteering
         {
             _sm.Update();
         }
+        if (IsTargetOnLOS() && !hasSeenTarget) // activa el bool para evitar que se ejecute miles de veces y arranca un contador de 10 segundos
+        {
+            hasSeenTarget = true;
+            
+        }
+        if (hasSeenTarget)
+        {
+            losTimer += Time.deltaTime;
+            if (losTimer > 10f)
+                hasSeenTarget = false;
+            Debug.Log(losTimer);
+        }  
+}
 
-        //viewLos
-
+    private bool IsTargetOnLOS()
+    {
+        if (viewLos.CheckRange(target.transform) && viewLos.CheckAngle(target.transform) && viewLos.CheckView(target.transform))
+        {
+            return true;
+        }
+        return false;
     }
 
     private void OnDrawGizmos()
