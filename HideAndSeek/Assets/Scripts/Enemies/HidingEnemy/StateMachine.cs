@@ -8,7 +8,11 @@ public class StateMachine<T>
 
     public IState CurrentState => currentState;
 
-
+    public void Initialize (IState startingState)
+    {
+        currentState = startingState;
+        currentState.Awake();
+    }
     public void SetCurrent(IState state)
     {
         currentState = state;
@@ -27,6 +31,7 @@ public class StateMachine<T>
         {
             currentState.Sleep();
             currentState = stateValue;
+            Debug.Log(currentState);
             currentState.Awake();
         }
     }
