@@ -6,19 +6,19 @@ public class LineOfSight : MonoBehaviour
     public float range;
     public float angle;
     public LayerMask obsMask;
-    public bool CheckRange(Transform target)
+    private Collider[] _hits = new Collider[6];
+    public bool CheckRange(Transform target) //distancia
     {
-        float distanceToTarget = (target.position - transform.position).sqrMagnitude; //Vector3.Distance(target.position, Origin);
+        float distanceToTarget = (target.position - transform.position).sqrMagnitude;
         return distanceToTarget <= range * range;
     }
-    public bool CheckAngle(Transform target)
+    public bool CheckAngle(Transform target) // angulo
     {
-        //B-A
         Vector3 dirToTarget = target.position - transform.position;
         float angleToTarget = Vector3.Angle(dirToTarget, transform.forward);
         return angleToTarget <= angle / 2;
     }
-    public bool CheckView(Transform target)
+    public bool CheckView(Transform target) // vision
     {
         Vector3 dirToTarget = target.position - transform.position;
         return !Physics.Raycast(transform.position, dirToTarget.normalized, dirToTarget.magnitude, obsMask);

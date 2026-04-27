@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 using static Nodes;
 
-[RequireComponent(typeof(LineOfSight))]
+[RequireComponent(typeof(ChaseLineOfSight))]
 public class ChaseEnemy : MonoBehaviour
 {
     [Header("AI Sense")]
-    private LineOfSight _los;
+    private ChaseLineOfSight _clos;
     private int currentCorner = 0;
     private Vector3[] corners;
     public NavMeshAgent agent;
@@ -16,15 +17,14 @@ public class ChaseEnemy : MonoBehaviour
     [Header("Stats")]
     public float speed;
     public float rotationSpeed; 
-    public Transform currentPoint;
+    
     public Transform LastEnemyPosition;
-    public bool HasSeenEnemy;
-    private float repathTimer = 0f;
-    [SerializeField] float repathRate = 0.5f;
+    public bool hasSeenEnemy;
 
     [Header("Patrol")]
     public List<Transform> patrolRoute;
     private bool hasPatrolRoute;
+    public Transform currentPoint;
     private float idleTimer = 0f;
     [SerializeField] float idleDuration = 2f;
 
@@ -34,6 +34,7 @@ public class ChaseEnemy : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        _clos = GetComponent<ChaseLineOfSight>();
 
         ActionNode idle = new ActionNode(Idle);
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
@@ -66,7 +67,19 @@ public class ChaseEnemy : MonoBehaviour
     }
 
     // ---- QUESTION NODES ----
-    private bool IsInLos() => /*_los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target) ||*/ HasSeenEnemy;
+    private bool IsInLos() 
+    {
+        if(_clos.HasTarget(out Transform t))
+        {
+            LastEnemyPosition = t;
+            if(LastEnemyPosition != null) 
+            {
+                hasSeenEnemy = true;
+            }
+            return true;
+        }
+        return false;
+    } 
 
     // ---- ACTION NODES ----
     private NodeState Idle()
@@ -100,8 +113,6 @@ public class ChaseEnemy : MonoBehaviour
             return NodeState.Failure;
 
         Vector3 targetPos;
-        
-
         if (currentCorner < corners.Length)
         {
             targetPos = corners[currentCorner];
@@ -136,7 +147,6 @@ public class ChaseEnemy : MonoBehaviour
     private NodeState CalculatePathToPoint(Transform Point)
     {
         if (Point == null) return NodeState.Failure;
-        
         if (hasPatrolRoute) 
         {
             NavMeshPath path = new NavMeshPath();
@@ -152,17 +162,32 @@ public class ChaseEnemy : MonoBehaviour
     }
     private NodeState MoveToEnemy(Transform target) 
     {
-        if (corners == null || corners.Length == 0)
-            return NodeState.Failure;
 
-        Vector3 targetCorner = corners[currentCorner];
-        Vector3 dir = targetCorner - transform.position;
-
-        if (dir.magnitude < 0.2f)
+        Vector3 targetPos;
+        if (currentCorner < corners.Length && corners.Length != 0)
         {
-            currentCorner++;
-            if (currentCorner >= corners.Length)
+            targetPos = corners[currentCorner];
+        }
+        else
+        {
+            targetPos = target.position;
+        }
+
+        Vector3 dir = targetPos - transform.position;
+        Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, rotationSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(targetPos, transform.position) < 2f)
+        {
+            
+            if (currentCorner < corners.Length && corners.Length != 0)
             {
+                Debug.Log("Cambiar de punto");
+                currentCorner++;
+            }
+            else
+            {
+                Debug.Log("Eliminar al target");
                 return NodeState.Success;
             }
         }
@@ -170,19 +195,11 @@ public class ChaseEnemy : MonoBehaviour
         {
             transform.position += dir.normalized * speed * Time.deltaTime;
         }
-
         return NodeState.Running;
     }
     private NodeState CalculatePathToEnemy(Transform target) 
     {
         if (target == null) return NodeState.Failure;
-
-        repathTimer += Time.deltaTime;
-        if (repathTimer < repathRate)
-            return NodeState.Success;
-
-        repathTimer = 0f;
-
         NavMeshPath path = new NavMeshPath();
 
         if (NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path))
@@ -192,7 +209,6 @@ public class ChaseEnemy : MonoBehaviour
             Debug.Log("SI calculo un path");
             return NodeState.Success;
         }
-        Debug.Log("no calculo ningun path");
         return NodeState.Failure;
     }
 

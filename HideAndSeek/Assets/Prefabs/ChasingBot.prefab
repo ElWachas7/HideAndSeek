@@ -107,9 +107,9 @@ GameObject:
   - component: {fileID: 3187473697392617185}
   - component: {fileID: 187026194408042123}
   - component: {fileID: 8421881358675850218}
-  - component: {fileID: 5014893353865859809}
   - component: {fileID: 2303516634916751579}
   - component: {fileID: 4657810509970390100}
+  - component: {fileID: 4856051921862891487}
   m_Layer: 0
   m_Name: ChasingBot
   m_TagString: Untagged
@@ -233,23 +233,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
---- !u!114 &5014893353865859809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7752525529488110407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e48e3dd6c62c99449f4452ce59e881c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 10
-  angle: 100
-  obsMask:
-    serializedVersion: 2
-    m_Bits: 192
 --- !u!114 &2303516634916751579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,3 +276,23 @@ NavMeshAgent:
   m_BaseOffset: 1.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
+--- !u!114 &4856051921862891487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7752525529488110407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3bbfb3e83264b04cb3e74cfe6867df8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 15
+  angle: 120
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 512
+  obsMask:
+    serializedVersion: 2
+    m_Bits: 192

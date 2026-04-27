@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Lost");
                 break;
             case GameState.Resumed:
+                Time.timeScale = 1f;
                 Debug.Log("Resumed");
                 break;
         }
