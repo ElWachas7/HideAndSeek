@@ -43,7 +43,7 @@ public class HidingEnemy : MonoBehaviour
         _sm.AddState(patrol, EntityStates.Patrol);
         //_sm.AddState(flee, EntityStates.Flee);
 
-        _sm.SetCurrent(patrol);
+        _sm.Initialize(patrol);
 
     }
     void Update()
