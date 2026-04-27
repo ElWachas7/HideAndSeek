@@ -40,7 +40,6 @@ public class ChaseLineOfSight : MonoBehaviour
                 bestTarget = target;
             }
         }
-
         return bestTarget;
     }
 

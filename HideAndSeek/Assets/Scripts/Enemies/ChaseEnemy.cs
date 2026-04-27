@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using static Nodes;
 
 [RequireComponent(typeof(ChaseLineOfSight))]
-public class ChaseEnemy : MonoBehaviour
+public class ChaseEnemy : MonoBehaviour, ISteering
 {
     [Header("AI Sense")]
     private ChaseLineOfSight _clos;
@@ -30,7 +30,8 @@ public class ChaseEnemy : MonoBehaviour
 
     private QuestionNode root;
 
-
+    public void Kill(){ }
+    public Vector3 GetDir(Vector3 currentDirection) { return Vector3.zero;}
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -227,13 +228,6 @@ public class ChaseEnemy : MonoBehaviour
     private void Seek()
     {
         var desired_velocity = (target.transform.position - transform.position).NoY().normalized * max_speed;
-        var steering = desired_velocity - currentSpeed;
-
-        currentSpeed += steering * Time.deltaTime;
-    }
-    private void Flee()
-    {
-        var desired_velocity = (transform.position - target.transform.position).NoY().normalized * max_speed;
         var steering = desired_velocity - currentSpeed;
 
         currentSpeed += steering * Time.deltaTime;

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3092904066405757896}
   - component: {fileID: 5381236391417410639}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 3902018132197730660}
   - component: {fileID: 7807368498444721096}
   - component: {fileID: 4359243486320195192}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GlassesXD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 5998683012965199830}
   - component: {fileID: 6650570871269260714}
   - component: {fileID: 3518235965574126187}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HidingBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
