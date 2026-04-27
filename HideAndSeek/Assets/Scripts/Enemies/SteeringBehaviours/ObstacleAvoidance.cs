@@ -14,7 +14,6 @@ public class ObstacleAvoidance : MonoBehaviour
     {
         _entity = entity;
         _radius = radius;
-        //  Eliminado el Mathf.Min que rompía el radio
         _angle = angle;
         _obsMask = obsMask;
         _colls = new Collider[countMaxObs];
@@ -23,7 +22,7 @@ public class ObstacleAvoidance : MonoBehaviour
 
     public Vector3 GetDir(Vector3 currentSpeed)
     {
-        int count = Physics.OverlapSphereNonAlloc(_entity.position, _radius, _colls, _obsMask);
+        int count = Physics.OverlapSphereNonAlloc(_entity.position, _radius, _colls, _obsMask); // guarda la cantidad de cosas en la obsMask dentro del radio del enemigo
         Collider nearColl = null;
         float nearCollDistance = 0;
         Vector3 nearClosestPoint = Vector3.zero;
