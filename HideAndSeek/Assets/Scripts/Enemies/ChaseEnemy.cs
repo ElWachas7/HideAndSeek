@@ -15,6 +15,7 @@ public class ChaseEnemy : MonoBehaviour
 
     [Header("Stats")]
     public float speed;
+    public float rotationSpeed; 
     public Transform currentPoint;
     public Transform LastEnemyPosition;
     public bool HasSeenEnemy;
@@ -27,20 +28,12 @@ public class ChaseEnemy : MonoBehaviour
     private float idleTimer = 0f;
     [SerializeField] float idleDuration = 2f;
 
-    [Header("TEST")]
-    [SerializeField] Transform point;
-    [SerializeField] Transform point2;
-    [SerializeField] Transform point3;
-    [SerializeField] Transform point4;
-
     private QuestionNode root;
 
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        //agent.updatePosition = false;
-        //agent.updateRotation = false;
 
         ActionNode idle = new ActionNode(Idle);
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
@@ -80,7 +73,7 @@ public class ChaseEnemy : MonoBehaviour
     {
         idleTimer += Time.deltaTime;
 
-        float angle = Mathf.Sin(Time.time * 2f) * 30f;
+        float angle = Mathf.Sin(Time.time * 2f) * 180f ;
         transform.rotation = Quaternion.Euler(0, angle, 0);
 
         if (idleTimer >= idleDuration)
@@ -88,18 +81,13 @@ public class ChaseEnemy : MonoBehaviour
             idleTimer = 0f;
             return NodeState.Success;
         }
-
         return NodeState.Running;
     }
     private NodeState GetPatrolRoute() 
     {
-        //LISTA DE PUNTOS = GameManager.instance.GetPatrolRoute();
         if (patrolRoute.Count == 0) 
         {
-            patrolRoute.Add(point);
-            patrolRoute.Add(point2);
-            patrolRoute.Add(point3);
-            patrolRoute.Add(point4);
+            patrolRoute = GameManager.Instance.GetPath().pathway;
             currentPoint = patrolRoute[0];
             hasPatrolRoute = true;
         }
@@ -112,6 +100,8 @@ public class ChaseEnemy : MonoBehaviour
             return NodeState.Failure;
 
         Vector3 targetPos;
+        
+
         if (currentCorner < corners.Length)
         {
             targetPos = corners[currentCorner];
@@ -120,9 +110,12 @@ public class ChaseEnemy : MonoBehaviour
         {
             targetPos = point.position;
         }
-        Vector3 dir = targetPos - transform.position;
 
-        if (dir.magnitude < 2f)
+        Vector3 dir = targetPos - transform.position;
+        Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, rotationSpeed * Time.deltaTime);
+
+        if (dir.magnitude < 2f && Vector3.Distance(targetPos, transform.position) < 2f)
         {
             if (currentCorner < corners.Length)
             {
@@ -143,27 +136,20 @@ public class ChaseEnemy : MonoBehaviour
     private NodeState CalculatePathToPoint(Transform Point)
     {
         if (Point == null) return NodeState.Failure;
-
+        
         if (hasPatrolRoute) 
         {
             NavMeshPath path = new NavMeshPath();
-
             if (NavMesh.CalculatePath(transform.position, Point.position, NavMesh.AllAreas, path))
             {
                 corners = path.corners;
                 currentCorner = 0;
-                Debug.Log("SI calculo un path");
                 return NodeState.Success;
             }
-            Debug.Log("no calculo ningun path");
             return NodeState.Failure;
         }
         return NodeState.Success;
     }
-
-
-
-
     private NodeState MoveToEnemy(Transform target) 
     {
         if (corners == null || corners.Length == 0)
