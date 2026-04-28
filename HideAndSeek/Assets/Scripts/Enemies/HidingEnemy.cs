@@ -64,14 +64,16 @@ public class HidingEnemy : MonoBehaviour, ISteering
         {
             hasSeenTarget = true;
             losTimer = 0f;
-            OnTargetSpotted?.Invoke();
+            OnTargetSpotted?.Invoke(); // invoca evento de Flee
         }
         if (hasSeenTarget)
         {
             losTimer += Time.deltaTime;
-            if (losTimer > 10f)
+            if (losTimer > 4f)
+            {
                 hasSeenTarget = false;
-            losTimer = 0f;
+                losTimer = 0f;
+            }
             Debug.Log(losTimer);
         }  
 }

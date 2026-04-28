@@ -15,6 +15,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
     private Vector3[] corners;
     private int currentCorner = 0;
 
+    private System.Action _OnTargetSpotted;
 
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
@@ -22,18 +23,24 @@ public class HidingEnemyPatrolState : State<EntityStates>
         obstacleAvoidance = obsAvoidance;
 
         path = new NavMeshPath();
-        _entity.OnTargetSpotted += () => _sm.ChangeState(EntityStates.Flee);
     }
     public override void Awake()
     {
         //base.Awake();
         SetNewHidingSpot();
+        _OnTargetSpotted = () => _sm.ChangeState(EntityStates.Flee);
+        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
     }
     public override void Execute()
     {
         //base.Execute();
         if (newHidingSpot != null)
             Patrol();
+    }
+    public override void Sleep()
+    {
+        base.Sleep();
+        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo
     }
     private void SetNewHidingSpot()
     {
