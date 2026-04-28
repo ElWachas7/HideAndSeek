@@ -33,13 +33,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     private void Start()
     {
         ChangeState(GameState.Menu);
         ResetHidingSpots();
     }
-
     public void ChangeState(GameState newState)
     {
         currentState = newState;
@@ -85,24 +83,20 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-
     public void MainMenu()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
-
     public void StartGame()
     {
         ChangeState(GameState.Playing);
         ResetHidingSpots();
     }
-
     public void PauseGame()
     {
         ChangeState(GameState.Paused);
         isPaused = true;
     }
-
     public void ResumeGame()
     {
         ChangeState(GameState.Resumed);
@@ -113,13 +107,11 @@ public class GameManager : MonoBehaviour
         OnGameWin.Invoke();
         ChangeState(GameState.Won);
     }
-
     public void LoseGame()
     {
         OnGameOver.Invoke();
         ChangeState(GameState.Lost);
     }
-
     public void CheckState()
     {
         if (!isAlive)
@@ -127,7 +119,6 @@ public class GameManager : MonoBehaviour
             LoseGame();
         }
     }
-
     private void ResetHidingSpots()
     {
         foreach (var spot in hidingSpots)
@@ -135,7 +126,6 @@ public class GameManager : MonoBehaviour
             spot.isTaken = false;
         }
     }
-  
     public HidingSpot GetHidingSpot()
     {
         Dictionary<HidingSpot, float> dict = new Dictionary<HidingSpot, float>();
@@ -156,7 +146,6 @@ public class GameManager : MonoBehaviour
 
         return selectedSpot;
     }
-
     public MyPath GetPath()
     {
         Dictionary<MyPath, float> dict = new Dictionary<MyPath, float>();

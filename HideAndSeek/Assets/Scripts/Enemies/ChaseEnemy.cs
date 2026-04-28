@@ -6,45 +6,55 @@ using static Nodes;
 [RequireComponent(typeof(ChaseLineOfSight))]
 public class ChaseEnemy : MonoBehaviour, ISteering
 {
+    [SerializeField]
     [Header("AI Sense")]
     private ChaseLineOfSight _clos;
     private int currentCorner = 0;
     private Vector3[] corners;
     public NavMeshAgent agent;
     private NavMeshPath path;
-    // Transform target;
 
-    [Header("Stats")]
+    [SerializeField]
+    [Header("ObstacleAvoidance")]
+    private ObstacleAvoidance obstacleAvoidance;
+    [SerializeField] private float radius;
+    [SerializeField] private float angle;
+    [SerializeField] private float personalArea;
+    [SerializeField] LayerMask _obsMask;
+
+    [SerializeField]
+    [Header("Movement")]
+    float maxSpeed;
+    [SerializeField] float maxForce;
+    [SerializeField] float predictionTime;
     Vector3 velocity;
     public Vector3 Velocity => velocity;
-    [SerializeField] float maxSpeed = 5f;
-    [SerializeField] float maxForce = 10f;
-    [SerializeField] float predictionTime = 1f;
 
-
+    [SerializeField]
     [Header("Patrol")]
-    public List<Transform> patrolRoute;
-    private bool hasPatrolRoute;
-    public Transform currentPoint;
-    private float idleTimer;
-    [SerializeField] float idleDuration;
+    float idleDuration;
     [SerializeField] private float patrolSpeed;
     [SerializeField] private float rotationSpeed;
+    private Transform currentPoint;
+    private float idleTimer;
+    private bool hasPatrolRoute;
+    public List<Transform> patrolRoute;
 
+    [SerializeField]
     [Header("Chasing")]
     public ISteering enemyReference;
-    [SerializeField] private float chaseSpeed;
     private Vector3 lastKnownPosition;
     private bool hasLastKnownPosition;
     private bool seeingEnemyRightNow;
 
     private QuestionNode root;
 
-    public void Kill(){ }
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         _clos = GetComponent<ChaseLineOfSight>();
+        obstacleAvoidance = new ObstacleAvoidance(this.transform,radius,angle,personalArea, _obsMask);
+
 
         ActionNode idle = new ActionNode(Idle);
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
@@ -131,11 +141,14 @@ public class ChaseEnemy : MonoBehaviour, ISteering
             targetPos = point.position;
         }
 
-        Vector3 dir = targetPos - transform.position;
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
+        Vector3 dir = (targetPos - transform.position).normalized;
+
+        Vector3 dirobs = obstacleAvoidance.GetDir(dir);
+
+        Quaternion rotacionObjetivo = Quaternion.LookRotation(dirobs);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, rotationSpeed * Time.deltaTime);
 
-        if (dir.magnitude < 2f)
+        if (Vector3.Distance(transform.position, targetPos) < 2f)
         {
             if (currentCorner < corners.Length)
             {
@@ -149,7 +162,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         else
         {
-            transform.position += dir.normalized * patrolSpeed * Time.deltaTime;
+            transform.position += dirobs * patrolSpeed * Time.deltaTime;
         }
         return NodeState.Running;
     }
@@ -175,9 +188,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         if (seeingEnemyRightNow)
         {
-            float dist = Vector3.Distance(transform.position, enemyReference.transform.position);
-
-            if (dist < 3f)
+            if (Vector3.Distance(transform.position, enemyReference.transform.position) < 3f)
             {
                 steering = Seek(enemyReference.transform.position);
             }
@@ -196,8 +207,16 @@ public class ChaseEnemy : MonoBehaviour, ISteering
             return NodeState.Failure;
         }
 
+        //Convertir el steering en una direccion y luego aplicar el avoidance
         velocity += steering * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+        Vector3 dir = velocity.normalized;
+
+        Vector3 finalDir = obstacleAvoidance.GetDir(dir);
+
+        velocity = finalDir * velocity.magnitude;
+
         transform.position += velocity * Time.deltaTime;
 
         Quaternion rot = Quaternion.LookRotation(velocity);
@@ -217,7 +236,9 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         return NodeState.Running;
     }
-    
+
+
+    // ---- Steering Behaviour ----
     Vector3 Seek(Vector3 targetPos)
     {
         Vector3 desired = (targetPos - transform.position).normalized * maxSpeed;
@@ -225,7 +246,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         return Vector3.ClampMagnitude(steering, maxForce);
     }
-
     Vector3 Pursuit(ISteering target)
     {
         Vector3 futurePos = target.transform.position + target.Velocity * predictionTime;
@@ -235,5 +255,19 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         return Vector3.ClampMagnitude(steering, maxForce);
     }
-    
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, radius);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, radius);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, angle / 2, 0) * transform.forward * radius);
+        Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -angle / 2, 0) * transform.forward * radius);
+    }
+    public void Kill() { }
 }

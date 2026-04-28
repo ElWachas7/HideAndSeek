@@ -58,7 +58,6 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
     private void FixedUpdate()
     {
         ManageStamina();
-
         sm.Update();
     }
 
@@ -76,7 +75,7 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
     }
     public void Kill()
     {
-        Debug.Log("Player muerto");
+        GameManager.Instance.LoseGame();
         gameObject.SetActive(false);
     }
 }

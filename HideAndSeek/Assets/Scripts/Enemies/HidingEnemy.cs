@@ -26,8 +26,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
     Vector3 velocity;
     public Vector3 Velocity => velocity;
 
-
-
     public ChaseEnemy Target => target;
     public Transform[] WayPoints => wayPoints;
     public float Speed => speed;
@@ -63,6 +61,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         _sm.AddState(flee, EntityStates.Flee);
 
         _sm.SetCurrent(patrol);
+
     }
     void Update()
     {
@@ -113,6 +112,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
 
     public void Kill()
     {
+        GameManager.Instance.AddPoints();
         Destroy(gameObject);
     }
 
