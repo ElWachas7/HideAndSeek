@@ -7,4 +7,6 @@ public interface ISteering
     public void Kill();
 
     public Vector3 GetDir(Vector3 currentDirection);
+
+    Transform transform { get; }
 }

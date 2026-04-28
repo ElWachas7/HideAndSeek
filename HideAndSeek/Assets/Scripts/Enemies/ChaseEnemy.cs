@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 using static Nodes;
@@ -12,14 +11,15 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     private int currentCorner = 0;
     private Vector3[] corners;
     public NavMeshAgent agent;
-   // Transform target;
+    private NavMeshPath path;
+    // Transform target;
 
     [Header("Stats")]
-    public float speed;
-    public float rotationSpeed; 
-    
-    public Transform LastEnemyPosition;
-    public bool hasSeenEnemy;
+    Vector3 velocity;
+    [SerializeField] float maxSpeed = 5f;
+    [SerializeField] float maxForce = 10f;
+    [SerializeField] float predictionTime = 1f;
+
 
     [Header("Patrol")]
     public List<Transform> patrolRoute;
@@ -27,6 +27,15 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     public Transform currentPoint;
     private float idleTimer = 0f;
     [SerializeField] float idleDuration = 2f;
+    [SerializeField] private float patrolSpeed;
+    [SerializeField] private float rotationSpeed;
+
+    [Header("Chasing")]
+    public Transform actualEnemyPosition;
+    [SerializeField] private float chaseSpeed;
+    private Vector3 lastKnownPosition;
+    private bool hasLastKnownPosition;
+    private bool seeingEnemyRightNow;
 
     private QuestionNode root;
 
@@ -41,12 +50,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
         ActionNode moveToPoint = new ActionNode(() => MoveToPoint(currentPoint));
         ActionNode calculatePathToPoint = new ActionNode(() => CalculatePathToPoint(currentPoint));
-        ActionNode moveToEnemy = new ActionNode(()=> MoveToEnemy(LastEnemyPosition));
-        ActionNode calculatePathToEnemy = new ActionNode(()=> CalculatePathToEnemy(LastEnemyPosition));
-
-        SequenceNode goChase = new SequenceNode(new List<ITreeNode>());
-        goChase.Add(calculatePathToEnemy);
-        goChase.Add(moveToEnemy);
+        ActionNode chase = new ActionNode(()=> Chase(actualEnemyPosition));
 
         SequenceNode goPatrol = new SequenceNode(new List<ITreeNode>());
         goPatrol.Add(calculatePathToPoint);
@@ -57,7 +61,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         setPatrol.Add(getPatrolRoute);
         setPatrol.Add(goPatrol);
 
-        QuestionNode isInLos = new QuestionNode(IsInLos, goChase, setPatrol);
+        QuestionNode isInLos = new QuestionNode(IsInLos, chase, setPatrol);
 
         root = isInLos;
 
@@ -70,13 +74,17 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     // ---- QUESTION NODES ----
     private bool IsInLos() 
     {
-        if(_clos.HasTarget(out Transform t))
+        if(_clos.HasTarget(out ISteering t))
         {
-            LastEnemyPosition = t;
-            if(LastEnemyPosition != null) 
-            {
-                hasSeenEnemy = true;
-            }
+            hasLastKnownPosition = true;
+            seeingEnemyRightNow = true;
+            actualEnemyPosition = t.transform;
+            lastKnownPosition = t.transform.position;
+            return true;
+        }
+        else if (hasLastKnownPosition) 
+        {
+            seeingEnemyRightNow = false;
             return true;
         }
         return false;
@@ -127,7 +135,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, rotationSpeed * Time.deltaTime);
 
-        if (dir.magnitude < 2f && Vector3.Distance(targetPos, transform.position) < 2f)
+        if (dir.magnitude < 2f)
         {
             if (currentCorner < corners.Length)
             {
@@ -141,7 +149,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         else
         {
-            transform.position += dir.normalized * speed * Time.deltaTime;
+            transform.position += dir.normalized * patrolSpeed * Time.deltaTime;
         }
         return NodeState.Running;
     }
@@ -150,7 +158,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         if (Point == null) return NodeState.Failure;
         if (hasPatrolRoute) 
         {
-            NavMeshPath path = new NavMeshPath();
+            path = new NavMeshPath();
             if (NavMesh.CalculatePath(transform.position, Point.position, NavMesh.AllAreas, path))
             {
                 corners = path.corners;
@@ -161,69 +169,42 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         return NodeState.Success;
     }
-    private NodeState MoveToEnemy(Transform target) 
+    private NodeState Chase(Transform target) 
     {
+        if (target == null) return NodeState.Failure;
 
         Vector3 targetPos;
-        if (currentCorner < corners.Length && corners.Length != 0)
+
+        if (seeingEnemyRightNow)
         {
-            targetPos = corners[currentCorner];
+            targetPos = target.position;
+            //SI ESTOY CERCA SEEK
+
+            // SI ESTOY LEJOS PERSUIT
+
+        }
+        else if (hasLastKnownPosition)
+        {
+            targetPos = lastKnownPosition;
         }
         else
         {
-            targetPos = target.position;
+            return NodeState.Failure;
         }
 
         Vector3 dir = targetPos - transform.position;
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, rotationSpeed * Time.deltaTime);
+        Quaternion rot = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, rotationSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(targetPos, transform.position) < 2f)
+        if (dir.magnitude < 1.5f)
         {
-            
-            if (currentCorner < corners.Length && corners.Length != 0)
-            {
-                Debug.Log("Cambiar de punto");
-                currentCorner++;
-            }
-            else
-            {
-                Debug.Log("Eliminar al target");
-                return NodeState.Success;
-            }
-        }
-        else
-        {
-            transform.position += dir.normalized * speed * Time.deltaTime;
-        }
-        return NodeState.Running;
-    }
-    private NodeState CalculatePathToEnemy(Transform target) 
-    {
-        if (target == null) return NodeState.Failure;
-        NavMeshPath path = new NavMeshPath();
-
-        if (NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path))
-        {
-            corners = path.corners;
-            currentCorner = 0;
-            Debug.Log("SI calculo un path");
+            Debug.Log("DESTRUIR");
+            hasLastKnownPosition = false;
             return NodeState.Success;
         }
-        return NodeState.Failure;
+        transform.position += dir.normalized * chaseSpeed * Time.deltaTime;
+        return NodeState.Running;
     }
-
-
-
-
-
-
-
-
-
-
-
-
     /*
     private void Seek()
     {
@@ -242,6 +223,5 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         var steering = desired_velocity - currentSpeed;
 
         currentSpeed += steering * Time.deltaTime;
-    }
-    */
+    }*/
 }

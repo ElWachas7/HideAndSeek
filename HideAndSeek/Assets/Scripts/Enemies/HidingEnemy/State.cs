@@ -11,12 +11,12 @@ public class State<T> : IState
 
     public virtual void Awake()
     {
-        Debug.Log("Entered " + GetType());
+        //Debug.Log("Entered " + GetType());
     }
 
     public virtual void Sleep()
     {
-        Debug.Log("Exited " + GetType());
+        //Debug.Log("Exited " + GetType());
     }
 
     public virtual void Execute()

@@ -13,23 +13,29 @@ public class ChaseLineOfSight : MonoBehaviour
     public LayerMask targetMask; 
     public LayerMask obsMask;
 
-    private Collider[] _hits = new Collider[20];
-    public Transform GetVisibleTarget()
+    private Collider[] _hits = new Collider[6];
+    public ISteering GetVisibleTarget()
     {
         int count = Physics.OverlapSphereNonAlloc(transform.position,range,_hits,targetMask);
-        Transform bestTarget = null;
+        ISteering bestTarget = null;
+
         bool _distance = false;
         bool _angle = false;
         bool _view = false;
 
         for (int i = 0; i < count; i++)
         {
-            Transform target = _hits[i].transform;
+            var hit = _hits[i];
 
-            float distanceToTarget = (target.position - transform.position).sqrMagnitude;
+            ISteering target = hit.GetComponent(typeof(ISteering)) as ISteering;
+            if (target == null)
+                continue;
+
+
+            float distanceToTarget = (target.transform.position - transform.position).sqrMagnitude; // Chequeo de distancia
             _distance = distanceToTarget <= range * range;
 
-            Vector3 dirToTarget = target.position - transform.position;
+            Vector3 dirToTarget = target.transform.position - transform.position;
             float angleToTarget = Vector3.Angle(dirToTarget, transform.forward);
             _angle = angleToTarget <= angle / 2;
 
@@ -43,7 +49,7 @@ public class ChaseLineOfSight : MonoBehaviour
         return bestTarget;
     }
 
-    public bool HasTarget(out Transform target)
+    public bool HasTarget(out ISteering target)
     {
         target = GetVisibleTarget();
         return target != null;
