@@ -512,9 +512,21 @@ PrefabInstance:
       propertyPath: uiManager
       value: 
       objectReference: {fileID: 1031880025}
+    - target: {fileID: 2519816878142734484, guid: dd14ba74f69835f4cbb327612358b437, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2552887535736465969, guid: dd14ba74f69835f4cbb327612358b437, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8743930589456958675, guid: dd14ba74f69835f4cbb327612358b437, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743930589456958675, guid: dd14ba74f69835f4cbb327612358b437, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7047,6 +7059,10 @@ PrefabInstance:
     - target: {fileID: 1473561230702458528, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2303516634916751579, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
+      propertyPath: rotationSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7752525529488110407, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
       propertyPath: m_Name

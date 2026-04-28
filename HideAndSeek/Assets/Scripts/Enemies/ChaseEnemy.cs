@@ -188,6 +188,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         else if (hasLastKnownPosition)
         {
+            enemyReference = null;
             steering = Seek(lastKnownPosition);
         }
         else
@@ -206,7 +207,11 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         if (Vector3.Distance(transform.position, targetPos) < 1.5f)
         {
-            enemyReference.Kill();
+            if (seeingEnemyRightNow && enemyReference != null)
+            {
+                enemyReference.Kill();
+            }
+
             hasLastKnownPosition = false;
             return NodeState.Success;
         }
