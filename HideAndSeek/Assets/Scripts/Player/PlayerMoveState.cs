@@ -20,6 +20,7 @@ public class PlayerMoveState : PlayerState
         else
         {
             player.currentStamina -= Time.fixedDeltaTime;
+            player.UIManager.UpdateStamina(player.currentStamina);
         }
     }
 }

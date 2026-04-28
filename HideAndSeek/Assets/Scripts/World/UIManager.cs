@@ -13,40 +13,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject inGameUI;
     [SerializeField] private Slider slider;
     [SerializeField] private TextMeshProUGUI scoreUI;
-    private float stamina = 10;
     void Start()
     {
-        OnMainMenu();
+     
         GameManager.Instance.OnGameOver += OnLose;
         GameManager.Instance.OnGameWin += OnWin;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            OnWin();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            OnLose();
-        }
-
-        if (Input.GetKey(KeyCode.F))
-        {
-            stamina -= Time.deltaTime;
-            if(stamina <= 0)
-            {
-                stamina = 10;
-            }
-            slider.value = 1f - stamina / 10f;
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            OnTryPause();
-        }
-    }
 
     private void ClearUI()
     {
@@ -109,4 +82,10 @@ public class UIManager : MonoBehaviour
         scoreUI.text = GameManager.Instance.Points.ToString();
         loseUI.gameObject.SetActive(true);
     }
+
+    public void UpdateStamina(float stamina)
+    {
+        slider.value = 1f - stamina / 10f;
+    }
+  
 }

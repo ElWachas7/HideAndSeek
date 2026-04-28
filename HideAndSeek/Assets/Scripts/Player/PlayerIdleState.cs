@@ -22,6 +22,7 @@ public class PlayerIdleState : PlayerState
         else if (player.currentStamina <= player.maxStamina)
         {
             player.currentStamina += Time.fixedDeltaTime * 2;
+            player.UIManager.UpdateStamina(player.currentStamina);
         }
     }
 }

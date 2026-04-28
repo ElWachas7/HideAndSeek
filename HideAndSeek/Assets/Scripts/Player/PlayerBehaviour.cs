@@ -7,14 +7,15 @@ public class PlayerBehaviour: MonoBehaviour
     public float speed = 3f;
     public float maxStamina = 10f;
     public float minStamina = 2.0f;
+    public UIManager UIManager => uiManager;
 
     [HideInInspector] public float currentStamina;
-    //si el booleano no está seteado, por default es FALSO
+    //si el booleano no estï¿½ seteado, por default es FALSO 
     [HideInInspector] public bool isRecharging;
     [HideInInspector] public Vector3 movementInput;
     [HideInInspector] public Rigidbody rb;
-
     private StateMachine<PlayerStates> sm;
+    [SerializeField] private UIManager uiManager;
 
     void Awake()
     {
@@ -41,6 +42,18 @@ public class PlayerBehaviour: MonoBehaviour
     void Update()
     {
         movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.OnTryPause();
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            GameManager.Instance.AddPoints();
+        }
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            GameManager.Instance.LoseGame();
+        }
     }
 
     private void FixedUpdate()
@@ -60,5 +73,6 @@ public class PlayerBehaviour: MonoBehaviour
         {
             isRecharging = false;
         }
+       
     }
 }

@@ -10,8 +10,7 @@ public class CameraRotation : MonoBehaviour
 
     private void Start()
     {
-        UnityEngine.Cursor.visible = false;
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        
     }
     private void Update()
     {
