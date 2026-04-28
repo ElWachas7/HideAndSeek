@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject winUI;
     [SerializeField] private GameObject loseUI;
     [SerializeField] private GameObject inGameUI;
-
+    [SerializeField] private Slider slider;
+    private float stamina = 10;
     void Start()
     {
         OnMainMenu();
@@ -27,6 +29,20 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             OnLose();
+        }
+
+        if (Input.GetKey(KeyCode.F))
+        {
+            stamina -= Time.deltaTime;
+            if(stamina <= 0)
+            {
+                stamina = 10;
+            }
+            slider.value = 1f - stamina / 10f;
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnTryPause();
         }
     }
 
@@ -60,18 +76,23 @@ public class UIManager : MonoBehaviour
         inGameUI.gameObject.SetActive(true);
     }
 
-    public void OnResume()
+    public void OnTryPause()
     {
+        if(GameManager.Instance.CurrentState == GameManager.GameState.Menu)
+        {
+            return;
+        }
         ClearUI();
-        GameManager.Instance.ResumeGame();
-        inGameUI.gameObject.SetActive(true);
-    }
+        if(GameManager.Instance.IsPaused == false)
+        {
+            GameManager.Instance.PauseGame();
+            pauseUI.gameObject.SetActive(true);
 
-    public void OnPause()
-    {
-        ClearUI();
-        GameManager.Instance.PauseGame();
-        pauseUI.gameObject.SetActive(true);
+        } else if (GameManager.Instance.IsPaused == true)
+        {
+            GameManager.Instance.ResumeGame();
+            inGameUI.gameObject.SetActive(true);
+        } 
     }
 
     public void OnWin()
