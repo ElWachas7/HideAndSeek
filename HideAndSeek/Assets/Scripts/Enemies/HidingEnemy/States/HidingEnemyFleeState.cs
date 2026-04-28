@@ -24,7 +24,7 @@ public class HidingEnemyFleeState : State<EntityStates>
 
         if (!_entity.HasSeenTarget)
         {
-            _sm.ChangeState(EntityStates.Patrol);
+            stateMachine.ChangeState(EntityStates.Patrol);
             return;
         }
         Flee();

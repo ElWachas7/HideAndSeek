@@ -13,6 +13,7 @@ public class StateMachine<T>
     public void SetCurrent(IState<T> state)
     {
         currentState = state;
+        currentState.Awake();
     }
 
     public void AddState(IState<T> state, T stateValue)

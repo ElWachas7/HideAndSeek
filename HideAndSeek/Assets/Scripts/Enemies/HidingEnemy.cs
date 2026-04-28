@@ -53,6 +53,11 @@ public class HidingEnemy : MonoBehaviour, ISteering
         var patrol = new HidingEnemyPatrolState(this, _sm, obstacleAvoidance);
         var flee = new HidingEnemyFleeState(this, _sm, obstacleAvoidance);
 
+        idle.AddTransition(patrol, EntityStates.Patrol);
+        patrol.AddTransition(idle, EntityStates.Idle);
+        patrol.AddTransition(flee, EntityStates.Flee);
+        flee.AddTransition(idle, EntityStates.Idle);
+
         _sm.AddState(idle, EntityStates.Idle);
         _sm.AddState(patrol, EntityStates.Patrol);
         _sm.AddState(flee, EntityStates.Flee);
@@ -80,7 +85,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
                 hasSeenTarget = false;
                 losTimer = 0f;
             }
-            Debug.Log(losTimer);
         }  
 }
 

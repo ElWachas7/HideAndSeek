@@ -19,7 +19,7 @@ public class HidingEnemyIdleState : State<EntityStates>
         base.Awake();
         _timer = 0f; // reiniciar tiempo cada vez q entra a idle
         idleTime = Random.Range(10f, 20f);
-        _OnTargetSpotted = () => _sm.ChangeState(EntityStates.Flee);
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee);
         _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
     }
     public override void Execute()
@@ -33,7 +33,7 @@ public class HidingEnemyIdleState : State<EntityStates>
 
         if (_timer >= idleTime)
         {
-            _sm.ChangeState(EntityStates.Patrol);
+            stateMachine.ChangeState(EntityStates.Patrol);
         }
     }
     public override void Sleep()

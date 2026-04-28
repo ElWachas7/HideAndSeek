@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class HidingEnemyPatrolState : State<EntityStates>
 {
@@ -28,7 +27,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
     {
         //base.Awake();
         SetNewHidingSpot();
-        _OnTargetSpotted = () => _sm.ChangeState(EntityStates.Flee);
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee);
         _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
     }
     public override void Execute()
@@ -44,25 +43,13 @@ public class HidingEnemyPatrolState : State<EntityStates>
     }
     private void SetNewHidingSpot()
     {
-        newHidingSpot = null;
         newHidingSpot = GameManager.Instance.GetHidingSpot().Transform;
-        if (newHidingSpot == null)
-        {
-            // no hay spots disponibles, volver a idle
-            _sm.ChangeState(EntityStates.Idle);
-            return;
-        }
         // se calcula una ruta desde nuestra pos hasta el hiding spot
         if (NavMesh.CalculatePath(_entity.transform.position, newHidingSpot.position, NavMesh.AllAreas, path))
         {
             corners = path.corners; // extraer vertices del path
             currentCorner = 0;
         }
-        else
-        {
-            _sm.ChangeState(EntityStates.Idle);
-        }
-
     }
     private void Patrol()
     {
@@ -96,7 +83,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
             currentCorner++;
             if (currentCorner >= corners.Length)
             {
-                _sm.ChangeState(EntityStates.Idle);
+                stateMachine.ChangeState(EntityStates.Idle);
             }
         }
     }

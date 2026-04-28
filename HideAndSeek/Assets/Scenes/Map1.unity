@@ -4441,7 +4441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7057,6 +7057,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
+--- !u!114 &768188602 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2303516634916751579, guid: 74bad22f3a9d4244dbf4a1c7b44d76c6, type: 3}
+  m_PrefabInstance: {fileID: 766477507}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141b10835bfa0dc4c8835d5201a484b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &774643509
 GameObject:
   m_ObjectHideFlags: 0
@@ -7088,7 +7099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7707,6 +7718,71 @@ Transform:
   m_Children: []
   m_Father: {fileID: 702789546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &918168625
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.55401
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.352007
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2672698202123317206, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5998683012965199830, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 768188602}
+    - target: {fileID: 6650570871269260714, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: obsMask.m_Bits
+      value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144886089943845626, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
+      propertyPath: m_Name
+      value: HidingBot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab09e7bf223f0a949af6e1327dc36bbe, type: 3}
 --- !u!1 &919668886
 GameObject:
   m_ObjectHideFlags: 0
@@ -10402,85 +10478,88 @@ MonoBehaviour:
   currentState: 0
   hidingEnemies: []
   hidingSpots:
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1435225031}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 933942562}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 339272522}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 13707927}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 718869322}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1964692843}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1092271346}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1012063755}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 213542085}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1767615998}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 2070993058}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 491103147}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1468416067}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 551963634}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1024162585}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 990781689}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1108783144}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 2089562016}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1878867919}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 187587045}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 407165982}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 1423501122}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 2037627024}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 998576015}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 39440679}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 917730983}
     chance: 50
     isTaken: 0
-  - Transform: {fileID: 0}
+  - Transform: {fileID: 2069314662}
+    chance: 50
+    isTaken: 0
+  - Transform: {fileID: 1656449993}
     chance: 50
     isTaken: 0
 --- !u!4 &1217241859
@@ -15972,7 +16051,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.20333333
+  m_VoxelSize: 0.18666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: d512a30bcc36ae0408fe137e88bbe81e, type: 2}
   m_BuildHeightMesh: 0
@@ -16875,3 +16954,4 @@ SceneRoots:
   - {fileID: 48320754}
   - {fileID: 766477507}
   - {fileID: 2037194515}
+  - {fileID: 918168625}

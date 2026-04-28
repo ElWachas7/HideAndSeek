@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         ChangeState(GameState.Playing);
-        Debug.Log("PLAYING");
+        ResetHidingSpots();
     }
 
     public void PauseGame()
