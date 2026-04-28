@@ -51,17 +51,17 @@ public class HidingEnemy : MonoBehaviour, ISteering
         var patrol = new HidingEnemyPatrolState(this, _sm, obstacleAvoidance);
         var flee = new HidingEnemyFleeState(this, _sm, obstacleAvoidance);
 
-        idle.AddTransition(patrol, EntityStates.Patrol);
+        idle.AddTransition(patrol, EntityStates.Patrol); // agregar todas las transiciones posibles (y deseadas) al diccionario de transiciones
+        idle.AddTransition(flee, EntityStates.Flee);
         patrol.AddTransition(idle, EntityStates.Idle);
         patrol.AddTransition(flee, EntityStates.Flee);
         flee.AddTransition(idle, EntityStates.Idle);
 
-        _sm.AddState(idle, EntityStates.Idle);
+        _sm.AddState(idle, EntityStates.Idle); // agregar los estados a utilizar al diccionario de estados
         _sm.AddState(patrol, EntityStates.Patrol);
         _sm.AddState(flee, EntityStates.Flee);
 
-        _sm.SetCurrent(patrol);
-
+        _sm.SetCurrent(patrol); // settear el estado con el que comenzara el juego el hiding enemy
     }
     void Update()
     {
@@ -69,13 +69,13 @@ public class HidingEnemy : MonoBehaviour, ISteering
         {
             _sm.Update();
         }
-        if (IsTargetOnLOS() && !hasSeenTarget) // activa el bool para evitar que se ejecute miles de veces y arranca un contador de 10 segundos
+        if (IsTargetOnLOS() && !hasSeenTarget) 
         {
-            hasSeenTarget = true;
+            hasSeenTarget = true; // activa el bool para evitar que se ejecute miles de veces 
             losTimer = 0f;
             OnTargetSpotted?.Invoke(); // invoca evento de Flee
         }
-        if (hasSeenTarget)
+        if (hasSeenTarget) // una vez que vio al Chasing enemy, arranca el timer de duracion del flee
         {
             losTimer += Time.deltaTime;
             if (losTimer > 4f)
@@ -86,7 +86,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         }  
 }
 
-    private bool IsTargetOnLOS()
+    private bool IsTargetOnLOS() // chequea si en el Line of sight del enemigo (en sus 3 variables) logra detectar al Chasing enemy
     {
         if (viewLos.CheckRange(target.transform) && viewLos.CheckAngle(target.transform) && viewLos.CheckView(target.transform))
         {
@@ -95,12 +95,10 @@ public class HidingEnemy : MonoBehaviour, ISteering
         return false;
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaños de las variables de obstacle avoidance
     {
-        Color myColor = Color.magenta;
-        myColor.a = 0.5f;
-        Gizmos.color = myColor;
-        Gizmos.DrawWireSphere(transform.position, obsRadius);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, obsRadius); 
 
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, obsPersonalArea);
@@ -110,9 +108,8 @@ public class HidingEnemy : MonoBehaviour, ISteering
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -obsAngle / 2, 0) * transform.forward * obsRadius);
     }
 
-    public void Kill()
+    public void Kill() // cuando el enemigo colisiona con el, es destruido
     {
-        GameManager.Instance.AddPoints();
         Destroy(gameObject);
     }
 

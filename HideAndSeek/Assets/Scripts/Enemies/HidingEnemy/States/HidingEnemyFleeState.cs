@@ -22,30 +22,30 @@ public class HidingEnemyFleeState : State<EntityStates>
     {
         base.Execute();
 
-        if (!_entity.HasSeenTarget)
+        if (!_entity.HasSeenTarget) // una vez que el timer de HidingEnemy termina, entra en idle
         {
-            stateMachine.ChangeState(EntityStates.Patrol);
+            stateMachine.ChangeState(EntityStates.Idle);
             return;
         }
         Flee();
     }
     private void Flee()
     {
-        Vector3 targetPos = _entity.Target.transform.position;
+        Vector3 targetPos = _entity.Target.transform.position; // se guarda la posicion el chasing enemy
 
-        Vector3 desiredVelocity = (_entity.transform.position - targetPos).normalized * _entity.Speed; // dir opuesta a chasing enemy (a donde quiero ir)
+        Vector3 desiredVelocity = (_entity.transform.position - targetPos).normalized * _entity.Speed; // se calcula la dir opuesta a chasing enemy (a donde quiero ir)
 
-        Vector3 steering = desiredVelocity - currentSpeed; // cuanto falta corregir para llegar a esa velocidad
+        Vector3 steering = desiredVelocity - currentSpeed; // calcula cuanto falta corregir para llegar a esa velocidad
 
         currentSpeed += steering * Time.deltaTime; // aplica la correccion y movimiento suave
 
-        Vector3 moveDir = obstacleAvoidance.GetDir(currentSpeed.normalized);
+        Vector3 moveDir = obstacleAvoidance.GetDir(currentSpeed.normalized); // redirige el movimiento utilizando obstacle avoidance
         moveDir.y = 0;
 
         if (moveDir != Vector3.zero)
         {
             Quaternion rotation = Quaternion.LookRotation(moveDir);
-            _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime);
+            _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime); // rota hacia a donde quiere ir primero
         }
 
         // calcula a donde iria si se mueve libremente y lo guarda en nextpos
@@ -56,9 +56,9 @@ public class HidingEnemyFleeState : State<EntityStates>
         {
             // preservar Y original para que no se hunda en el piso
             // SamplePosition busca el punto valido mas cercano a nextPos, en un radio de 1f
-            _entity.transform.position = new Vector3(hit.position.x, _entity.transform.position.y, hit.position.z);
+            // si lo encuentra significa que es seguro moverse ahi
+            _entity.transform.position = new Vector3(hit.position.x, _entity.transform.position.y, hit.position.z); // mueve la posicion de la entity al camino que se encontro
         }
-        //_entity.transform.position += moveDir * currentSpeed.magnitude * Time.deltaTime;
     }
     public override void Sleep()
     {

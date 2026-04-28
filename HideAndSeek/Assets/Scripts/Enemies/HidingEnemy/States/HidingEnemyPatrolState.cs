@@ -7,14 +7,14 @@ public class HidingEnemyPatrolState : State<EntityStates>
 {
     private HidingEnemy _entity;
     private ObstacleAvoidance obstacleAvoidance;
-    private Transform newHidingSpot;
+    private Transform newHidingSpot; // hiding spot actual --> destino actual
 
     // nav mesh
-    private NavMeshPath path;
-    private Vector3[] corners;
-    private int currentCorner = 0;
+    private NavMeshPath path; // camino calculado por nav mesh
+    private Vector3[] corners; // vertices del camino nav mesh para recorrer en orden
+    private int currentCorner = 0; // punto actual del camino
 
-    private System.Action _OnTargetSpotted;
+    private System.Action _OnTargetSpotted; // guardo evento de flee en variable para poder desuscribirse luego 
 
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
@@ -25,45 +25,46 @@ public class HidingEnemyPatrolState : State<EntityStates>
     }
     public override void Awake()
     {
-        //base.Awake();
+        base.Awake();
         SetNewHidingSpot();
-        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee);
-        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee); // que hacer cuando se triggerea el evento
+        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo a evento de flee
     }
     public override void Execute()
     {
-        //base.Execute();
+        base.Execute();
         if (newHidingSpot != null)
             Patrol();
     }
     public override void Sleep()
     {
         base.Sleep();
-        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo
+        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo a evento de flee
     }
     private void SetNewHidingSpot()
     {
-        newHidingSpot = GameManager.Instance.GetHidingSpot().Transform;
-        // se calcula una ruta desde nuestra pos hasta el hiding spot
+        newHidingSpot = GameManager.Instance.GetHidingSpot().Transform; // le pide una nueva hiding spot al GameManager
+
         if (NavMesh.CalculatePath(_entity.transform.position, newHidingSpot.position, NavMesh.AllAreas, path))
-        {
-            corners = path.corners; // extraer vertices del path
-            currentCorner = 0;
+        {   // calcula el camino mas corto navegable entre la pos actual del hiding enemy y el hiding spot
+            // utilizando cualquier superficie del nav mesh, y el resultado se guarda en path
+            corners = path.corners; // los corners son los puntos del camino que hay que recorrer en orden
+            currentCorner = 0; // empezar desde el primer punto del camino
         }
     }
     private void Patrol()
-    {
+    {    
         if (corners == null || corners.Length == 0 || currentCorner >= corners.Length) return;
 
         Vector3 targetWaypoint; // apunta a la corner actual del nav mesh
 
-        if (currentCorner < corners.Length)
+        if (currentCorner < corners.Length) // mientras haya vertices por recorrer, apuntar al actual
         {
             targetWaypoint = corners[currentCorner];
         }
         else
         {
-            targetWaypoint = newHidingSpot.position;
+            targetWaypoint = newHidingSpot.position; // si ya no hay vertices, apuntar directamente al hiding spot actual
         }
 
         Vector3 dirToWaypoint = (targetWaypoint - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
@@ -74,14 +75,15 @@ public class HidingEnemyPatrolState : State<EntityStates>
         {
             Quaternion rotation = Quaternion.LookRotation(moveDir);
             _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime);
+            // rota (suavemente con el Slerp) hacia la direccion del movimiento
         }
 
-        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion (posiblemente corregida)
+        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion calculada
 
-        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 2f)
+        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 2f) // si llego al waypoint actual
         {
             currentCorner++;
-            if (currentCorner >= corners.Length)
+            if (currentCorner >= corners.Length) // si recorrio todos los vertices, llego al hiding spot
             {
                 stateMachine.ChangeState(EntityStates.Idle);
             }
