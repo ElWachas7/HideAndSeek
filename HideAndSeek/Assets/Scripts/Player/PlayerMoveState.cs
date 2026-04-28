@@ -11,7 +11,7 @@ public class PlayerMoveState : PlayerState
     public override void Execute()
     {
 
-        player.rb.velocity = player.movementInput.normalized * player.speed;
+        player.rb.velocity = player.movementInput * player.speed;
 
         if (player.movementInput.magnitude <= 0.1f || player.currentStamina <= 0)
         {

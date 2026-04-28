@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBehaviour: MonoBehaviour
+public class PlayerBehaviour: MonoBehaviour, ISteering
 {
     public float speed = 3f;
+    public Vector3 Velocity => rb.velocity;
     public float maxStamina = 10f;
     public float minStamina = 2.0f;
     public UIManager UIManager => uiManager;
@@ -41,7 +42,6 @@ public class PlayerBehaviour: MonoBehaviour
 
     void Update()
     {
-        //movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         var horizontalInput = Input.GetAxisRaw("Horizontal");
         var verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -73,5 +73,10 @@ public class PlayerBehaviour: MonoBehaviour
             isRecharging = false;
         }
        
+    }
+    public void Kill()
+    {
+        Debug.Log("Player muerto");
+        gameObject.SetActive(false);
     }
 }
