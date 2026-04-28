@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public enum GameState { Menu, Playing, Paused, Won, Lost, Resumed }
     [SerializeField] private GameState currentState;
+    public GameState CurrentState => currentState;
     public bool IsAlive => isAlive;
     private bool isAlive;
     public event Action OnGameOver;
@@ -15,6 +16,11 @@ public class GameManager : MonoBehaviour
 
     public List<HidingEnemy> hidingEnemies;
     public List<HidingSpot> hidingSpots;
+
+    public int Points => points;
+    private int points = 5;
+    public bool IsPaused => isPaused;
+    private bool isPaused = false;
 
     void Awake()
     {
@@ -78,9 +84,15 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        ChangeState(GameState.Paused);
+         ChangeState(GameState.Paused);
+        isPaused = true;
     }
 
+    public void ResumeGame()
+    {
+        ChangeState(GameState.Resumed);
+        isPaused = false;
+    }
     public void WinGame()
     {
         OnGameWin.Invoke();
@@ -91,11 +103,6 @@ public class GameManager : MonoBehaviour
     {
         OnGameOver.Invoke();
         ChangeState(GameState.Lost);
-    }
-
-    public void ResumeGame()
-    {
-        ChangeState(GameState.Resumed);
     }
 
     public void CheckState()
@@ -146,5 +153,15 @@ public class GameManager : MonoBehaviour
         }
 
         return MyRandom.RouletteWheelSelection(dict);
+    }
+
+    // la funcion la llame Add pq al restar puntos el puesto en el que termina el player aumenta
+    public void AddPoints()
+    {
+        points--;
+        if(points <= 1)
+        {
+            WinGame();
+        }
     }
 }
