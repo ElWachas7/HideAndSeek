@@ -36,7 +36,7 @@ public class HidingEnemyIdleState : State<EntityStates>
 
         if (_timer >= idleTime)
         {
-            _sm.ChangeState(EntityStates.Patrol);
+            stateMachine.ChangeState(EntityStates.Patrol);
             //Debug.Log("cambia a patrol");
         }
     }

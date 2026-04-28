@@ -49,7 +49,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         _sm.AddState(patrol, EntityStates.Patrol);
         _sm.AddState(flee, EntityStates.Flee);
 
-        _sm.Initialize(patrol);
+        _sm.SetCurrent(patrol);
 
     }
     void Update()

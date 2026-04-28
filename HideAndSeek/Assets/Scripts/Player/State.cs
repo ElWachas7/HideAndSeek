@@ -15,12 +15,10 @@ public class State<T> : IState<T>
 
     public virtual void Awake()
     {
-        Debug.Log("Entered " + GetType());
     }
 
     public virtual void Sleep()
     {
-        Debug.Log("Exited " + GetType());
     }
 
     public virtual void Execute()

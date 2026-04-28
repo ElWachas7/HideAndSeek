@@ -40,7 +40,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
         if (newHidingSpot == null)
         {
             // no hay spots disponibles, volver a idle
-            _sm.ChangeState(EntityStates.Idle);
+            stateMachine.ChangeState(EntityStates.Idle);
             return;
         }
         // se calcula una ruta desde nuestra pos hasta el hiding spot
@@ -52,7 +52,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
         else
         {
             Debug.LogWarning("no se pudo calcular un path al hiding spot");
-            _sm.ChangeState(EntityStates.Idle);
+            stateMachine.ChangeState(EntityStates.Idle);
         }
 
     }
@@ -88,7 +88,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
             currentCorner++;
             if (currentCorner >= corners.Length)
             {
-                _sm.ChangeState(EntityStates.Idle);
+                stateMachine.ChangeState(EntityStates.Idle);
             }
         }
     }

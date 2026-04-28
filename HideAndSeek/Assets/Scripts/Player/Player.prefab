@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949f2398a27cf7d4cb6b8076a104520c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turn: {x: 0, y: 0}
+  turn: {x: 0.04, y: 0}
   sensitivity: 0.5
 --- !u!1 &2552887535736465969
 GameObject:
@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 1254342743851132567}
   - component: {fileID: 7012137561521556839}
   - component: {fileID: 396771229570572845}
+  - component: {fileID: 6769688218818041670}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -232,3 +233,26 @@ MonoBehaviour:
   isRecharging: 0
   movementInput: {x: 0, y: 0, z: 0}
   rb: {fileID: 0}
+  uiManager: {fileID: 0}
+--- !u!195 &6769688218818041670
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8743930589456958675}
+  m_Enabled: 0
+  m_AgentTypeID: 0
+  m_Radius: 0.00001
+  m_Speed: 0
+  m_Acceleration: 0
+  avoidancePriority: 0
+  m_AngularSpeed: 0
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 0
+  m_AutoRepath: 0
+  m_Height: 0.00001
+  m_BaseOffset: 0
+  m_WalkableMask: 0
+  m_ObstacleAvoidanceType: 0

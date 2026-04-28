@@ -246,14 +246,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 0}
-  speed: 3
-  rotationSpeed: 2
-  currentPoint: {fileID: 0}
-  LastEnemyPosition: {fileID: 0}
-  HasSeenEnemy: 0
-  repathRate: 0.5
+  maxSpeed: 5
+  maxForce: 10
+  predictionTime: 1
   patrolRoute: []
+  currentPoint: {fileID: 0}
   idleDuration: 3
+  patrolSpeed: 2
+  rotationSpeed: 2
+  chaseSpeed: 5
 --- !u!195 &4657810509970390100
 NavMeshAgent:
   m_ObjectHideFlags: 0
