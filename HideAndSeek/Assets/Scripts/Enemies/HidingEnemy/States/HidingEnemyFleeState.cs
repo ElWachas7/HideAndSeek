@@ -22,9 +22,9 @@ public class HidingEnemyFleeState : State<EntityStates>
     {
         base.Execute();
 
-        if (!_entity.HasSeenTarget) // una vez que el timer de HidingEnemy termina, vuelve a patrol
+        if (!_entity.HasSeenTarget) // una vez que el timer de HidingEnemy termina, entra en idle
         {
-            stateMachine.ChangeState(EntityStates.Patrol);
+            stateMachine.ChangeState(EntityStates.Idle);
             return;
         }
         Flee();

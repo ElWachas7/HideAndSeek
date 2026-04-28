@@ -31,9 +31,13 @@ public class HidingEnemyIdleState : State<EntityStates>
         float angle = Mathf.Sin(Time.time * 2f) * 180f;
         _entity.transform.rotation = Quaternion.Euler(0, angle, 0);
 
-        if (_timer >= idleTime)
+        if (_timer >= idleTime && !_entity.HasSeenTarget)
         {
             stateMachine.ChangeState(EntityStates.Patrol);
+        }
+        if (_entity.HasSeenTarget)
+        {
+            stateMachine.ChangeState(EntityStates.Flee);
         }
     }
     public override void Sleep()

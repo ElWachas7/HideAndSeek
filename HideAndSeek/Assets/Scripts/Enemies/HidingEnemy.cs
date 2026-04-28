@@ -54,6 +54,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         var flee = new HidingEnemyFleeState(this, _sm, obstacleAvoidance);
 
         idle.AddTransition(patrol, EntityStates.Patrol);
+        idle.AddTransition(flee, EntityStates.Flee);
         patrol.AddTransition(idle, EntityStates.Idle);
         patrol.AddTransition(flee, EntityStates.Flee);
         flee.AddTransition(idle, EntityStates.Idle);
