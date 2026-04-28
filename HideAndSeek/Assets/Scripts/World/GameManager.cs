@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public List<HidingEnemy> hidingEnemies;
     public List<HidingSpot> hidingSpots;
 
+    public int Points => points;
     private int points = 5;
     public bool IsPaused => isPaused;
     private bool isPaused = false;
@@ -158,5 +159,9 @@ public class GameManager : MonoBehaviour
     public void AddPoints()
     {
         points--;
+        if(points <= 1)
+        {
+            WinGame();
+        }
     }
 }

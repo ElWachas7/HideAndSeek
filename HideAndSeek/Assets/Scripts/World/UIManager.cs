@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject loseUI;
     [SerializeField] private GameObject inGameUI;
     [SerializeField] private Slider slider;
+    [SerializeField] private TextMeshProUGUI scoreUI;
     private float stamina = 10;
     void Start()
     {
@@ -104,6 +106,7 @@ public class UIManager : MonoBehaviour
     public void OnLose()
     {
         ClearUI();
+        scoreUI.text = GameManager.Instance.Points.ToString();
         loseUI.gameObject.SetActive(true);
     }
 }
