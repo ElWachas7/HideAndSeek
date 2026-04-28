@@ -6,7 +6,7 @@ public interface ISteering
 {
     public void Kill();
 
-    public Vector3 GetDir(Vector3 currentDirection);
+    Vector3 Velocity { get; }
 
     Transform transform { get; }
 }

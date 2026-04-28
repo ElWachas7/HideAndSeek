@@ -22,6 +22,11 @@ public class HidingEnemy : MonoBehaviour, ISteering
     [SerializeField] private float obsPersonalArea;
     [SerializeField] private LayerMask obsMask;
 
+    [Header("Steering")]
+    Vector3 velocity;
+    public Vector3 Velocity => velocity;
+
+
 
     public ChaseEnemy Target => target;
     public Transform[] WayPoints => wayPoints;
@@ -78,8 +83,4 @@ public class HidingEnemy : MonoBehaviour, ISteering
         Destroy(gameObject);
     }
 
-    public Vector3 GetDir(Vector3 currentDirection)
-    {
-        throw new System.NotImplementedException();
-    }
 }

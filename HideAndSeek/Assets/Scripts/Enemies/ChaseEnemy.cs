@@ -16,6 +16,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
     [Header("Stats")]
     Vector3 velocity;
+    public Vector3 Velocity => velocity;
     [SerializeField] float maxSpeed = 5f;
     [SerializeField] float maxForce = 10f;
     [SerializeField] float predictionTime = 1f;
@@ -25,13 +26,13 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     public List<Transform> patrolRoute;
     private bool hasPatrolRoute;
     public Transform currentPoint;
-    private float idleTimer = 0f;
-    [SerializeField] float idleDuration = 2f;
+    private float idleTimer;
+    [SerializeField] float idleDuration;
     [SerializeField] private float patrolSpeed;
     [SerializeField] private float rotationSpeed;
 
     [Header("Chasing")]
-    public Transform actualEnemyPosition;
+    public ISteering enemyReference;
     [SerializeField] private float chaseSpeed;
     private Vector3 lastKnownPosition;
     private bool hasLastKnownPosition;
@@ -40,7 +41,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     private QuestionNode root;
 
     public void Kill(){ }
-    public Vector3 GetDir(Vector3 currentDirection) { return Vector3.zero;}
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -50,7 +50,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
         ActionNode moveToPoint = new ActionNode(() => MoveToPoint(currentPoint));
         ActionNode calculatePathToPoint = new ActionNode(() => CalculatePathToPoint(currentPoint));
-        ActionNode chase = new ActionNode(()=> Chase(actualEnemyPosition));
+        ActionNode chase = new ActionNode(()=> Chase());
 
         SequenceNode goPatrol = new SequenceNode(new List<ITreeNode>());
         goPatrol.Add(calculatePathToPoint);
@@ -78,7 +78,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         {
             hasLastKnownPosition = true;
             seeingEnemyRightNow = true;
-            actualEnemyPosition = t.transform;
+            enemyReference = t;
             lastKnownPosition = t.transform.position;
             return true;
         }
@@ -169,59 +169,66 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         return NodeState.Success;
     }
-    private NodeState Chase(Transform target) 
+    private NodeState Chase() 
     {
-        if (target == null) return NodeState.Failure;
-
-        Vector3 targetPos;
+        Vector3 steering;
 
         if (seeingEnemyRightNow)
         {
-            targetPos = target.position;
-            //SI ESTOY CERCA SEEK
+            float dist = Vector3.Distance(transform.position, enemyReference.transform.position);
 
-            // SI ESTOY LEJOS PERSUIT
-
+            if (dist < 3f)
+            {
+                steering = Seek(enemyReference.transform.position);
+            }
+            else
+            {
+                steering = Pursuit(enemyReference);
+            }
         }
         else if (hasLastKnownPosition)
         {
-            targetPos = lastKnownPosition;
+            steering = Seek(lastKnownPosition);
         }
         else
         {
             return NodeState.Failure;
         }
 
-        Vector3 dir = targetPos - transform.position;
-        Quaternion rot = Quaternion.LookRotation(dir);
+        velocity += steering * Time.deltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        transform.position += velocity * Time.deltaTime;
+
+        Quaternion rot = Quaternion.LookRotation(velocity);
         transform.rotation = Quaternion.Slerp(transform.rotation, rot, rotationSpeed * Time.deltaTime);
 
-        if (dir.magnitude < 1.5f)
+        Vector3 targetPos = seeingEnemyRightNow ? enemyReference.transform.position : lastKnownPosition;
+
+        if (Vector3.Distance(transform.position, targetPos) < 1.5f)
         {
-            Debug.Log("DESTRUIR");
+            enemyReference.Kill();
             hasLastKnownPosition = false;
             return NodeState.Success;
         }
-        transform.position += dir.normalized * chaseSpeed * Time.deltaTime;
         return NodeState.Running;
     }
-    /*
-    private void Seek()
+    
+    Vector3 Seek(Vector3 targetPos)
     {
-        var desired_velocity = (target.transform.position - transform.position).NoY().normalized * max_speed;
-        var steering = desired_velocity - currentSpeed;
+        Vector3 desired = (targetPos - transform.position).normalized * maxSpeed;
+        Vector3 steering = desired - velocity;
 
-        currentSpeed += steering * Time.deltaTime;
+        return Vector3.ClampMagnitude(steering, maxForce);
     }
 
-    private void Persuit()
+    Vector3 Pursuit(ISteering target)
     {
-        var future_position = target.transform.position + target.Speed * timePrediction;
+        Vector3 futurePos = target.transform.position + target.Velocity * predictionTime;
 
+        Vector3 desired = (futurePos - transform.position).normalized * maxSpeed;
+        Vector3 steering = desired - velocity;
 
-        var desired_velocity = (future_position - transform.position).NoY().normalized * max_speed;
-        var steering = desired_velocity - currentSpeed;
-
-        currentSpeed += steering * Time.deltaTime;
-    }*/
+        return Vector3.ClampMagnitude(steering, maxForce);
+    }
+    
 }
