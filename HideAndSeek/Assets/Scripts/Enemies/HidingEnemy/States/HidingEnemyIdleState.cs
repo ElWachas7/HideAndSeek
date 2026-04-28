@@ -8,18 +8,16 @@ public class HidingEnemyIdleState : State<EntityStates>
     private float _timer;
     private float idleTime;
 
-    private StateMachine<EntityStates> _stateMachine;
-
     public HidingEnemyIdleState(HidingEnemy entity, StateMachine<EntityStates> sm) : base(sm)
     {
         _entity = entity;
+        _entity.OnTargetSpotted += () => _sm.ChangeState(EntityStates.Flee);
     }
     public override void Awake()
     {
         base.Awake();
         _timer = 0f; // reiniciar tiempo cada vez q entra a idle
         idleTime = Random.Range(10f, 20f);
-        _stateMachine = new StateMachine<EntityStates>();
     }
     public override void Execute()
     {
