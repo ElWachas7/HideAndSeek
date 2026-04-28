@@ -158,10 +158,13 @@ public class GameManager : MonoBehaviour
     // la funcion la llame Add pq al restar puntos el puesto en el que termina el player aumenta
     public void AddPoints()
     {
-        points--;
-        if(points <= 1)
+        if (points <= 1)
         {
             WinGame();
+        }
+        else 
+        {
+            points--;
         }
     }
 }
