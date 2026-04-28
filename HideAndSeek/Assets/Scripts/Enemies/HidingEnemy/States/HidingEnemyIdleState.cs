@@ -15,20 +15,12 @@ public class HidingEnemyIdleState : State<EntityStates>
     public override void Awake()
     {
         base.Awake();
-        _timer = 0f; // reiniciar tiempo cada vez q entra a idle
+        _timer = 0f;
         idleTime = Random.Range(10f, 20f);
     }
     public override void Execute()
     {
         base.Execute();
-
-        //if (_entity.ViewLos.CheckRange(_entity.Target) &&
-        //    _entity.ViewLos.CheckAngle(_entity.Target) &&
-        //    _entity.ViewLos.CheckView(_entity.Target))
-        //{
-        //    _sm.ChangeState(EntityStates.Flee);
-        //    return;
-        //}
         _timer += Time.deltaTime;
 
         float angle = Mathf.Sin(Time.time * 2f) * 180f;
@@ -37,7 +29,7 @@ public class HidingEnemyIdleState : State<EntityStates>
         if (_timer >= idleTime)
         {
             stateMachine.ChangeState(EntityStates.Patrol);
-            //Debug.Log("cambia a patrol");
+            Debug.Log("cambia a patrol");
         }
     }
 }
