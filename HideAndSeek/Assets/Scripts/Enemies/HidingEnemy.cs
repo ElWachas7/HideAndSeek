@@ -26,8 +26,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
     Vector3 velocity;
     public Vector3 Velocity => velocity;
 
-
-
     public ChaseEnemy Target => target;
     public Transform[] WayPoints => wayPoints;
     public float Speed => speed;
@@ -53,17 +51,17 @@ public class HidingEnemy : MonoBehaviour, ISteering
         var patrol = new HidingEnemyPatrolState(this, _sm, obstacleAvoidance);
         var flee = new HidingEnemyFleeState(this, _sm, obstacleAvoidance);
 
-        idle.AddTransition(patrol, EntityStates.Patrol);
+        idle.AddTransition(patrol, EntityStates.Patrol); // agregar todas las transiciones posibles (y deseadas) al diccionario de transiciones
         idle.AddTransition(flee, EntityStates.Flee);
         patrol.AddTransition(idle, EntityStates.Idle);
         patrol.AddTransition(flee, EntityStates.Flee);
         flee.AddTransition(idle, EntityStates.Idle);
 
-        _sm.AddState(idle, EntityStates.Idle);
+        _sm.AddState(idle, EntityStates.Idle); // agregar los estados a utilizar al diccionario de estados
         _sm.AddState(patrol, EntityStates.Patrol);
         _sm.AddState(flee, EntityStates.Flee);
 
-        _sm.SetCurrent(patrol);
+        _sm.SetCurrent(patrol); // settear el estado con el que comenzara el juego el hiding enemy
     }
     void Update()
     {
@@ -99,10 +97,8 @@ public class HidingEnemy : MonoBehaviour, ISteering
 
     private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaños de las variables de obstacle avoidance
     {
-        Color myColor = Color.magenta;
-        myColor.a = 0.5f;
-        Gizmos.color = myColor;
-        Gizmos.DrawWireSphere(transform.position, obsRadius);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, obsRadius); 
 
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, obsPersonalArea);

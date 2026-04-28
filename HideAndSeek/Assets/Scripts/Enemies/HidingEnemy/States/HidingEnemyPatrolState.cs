@@ -7,14 +7,14 @@ public class HidingEnemyPatrolState : State<EntityStates>
 {
     private HidingEnemy _entity;
     private ObstacleAvoidance obstacleAvoidance;
-    private Transform newHidingSpot;
+    private Transform newHidingSpot; // hiding spot actual --> destino actual
 
     // nav mesh
-    private NavMeshPath path;
-    private Vector3[] corners;
-    private int currentCorner = 0;
+    private NavMeshPath path; // camino calculado por nav mesh
+    private Vector3[] corners; // vertices del camino nav mesh para recorrer en orden
+    private int currentCorner = 0; // punto actual del camino
 
-    private System.Action _OnTargetSpotted;
+    private System.Action _OnTargetSpotted; // guardo evento de flee en variable para poder desuscribirse luego 
 
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
@@ -27,8 +27,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
     {
         base.Awake();
         SetNewHidingSpot();
-        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee); // guardo evento de flee en variable 
-                                                                              // para poder desuscribirse luego 
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee); // que hacer cuando se triggerea el evento
         _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo a evento de flee
     }
     public override void Execute()
@@ -59,13 +58,13 @@ public class HidingEnemyPatrolState : State<EntityStates>
 
         Vector3 targetWaypoint; // apunta a la corner actual del nav mesh
 
-        if (currentCorner < corners.Length)
+        if (currentCorner < corners.Length) // mientras haya vertices por recorrer, apuntar al actual
         {
             targetWaypoint = corners[currentCorner];
         }
         else
         {
-            targetWaypoint = newHidingSpot.position;
+            targetWaypoint = newHidingSpot.position; // si ya no hay vertices, apuntar directamente al hiding spot actual
         }
 
         Vector3 dirToWaypoint = (targetWaypoint - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
@@ -76,14 +75,15 @@ public class HidingEnemyPatrolState : State<EntityStates>
         {
             Quaternion rotation = Quaternion.LookRotation(moveDir);
             _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime);
+            // rota (suavemente con el Slerp) hacia la direccion del movimiento
         }
 
-        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion (posiblemente corregida)
+        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion calculada
 
-        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 2f)
+        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 2f) // si llego al waypoint actual
         {
             currentCorner++;
-            if (currentCorner >= corners.Length)
+            if (currentCorner >= corners.Length) // si recorrio todos los vertices, llego al hiding spot
             {
                 stateMachine.ChangeState(EntityStates.Idle);
             }
