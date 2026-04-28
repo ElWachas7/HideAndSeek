@@ -10,12 +10,14 @@ public class CameraRotation : MonoBehaviour
 
     private void Start()
     {
-        
+        UnityEngine.Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
     }
     private void Update()
     {
         turn.y += Input.GetAxis("Mouse Y") * sensitivity;
         turn.x += Input.GetAxis("Mouse X") * sensitivity;
-        transform.localRotation = Quaternion.Euler(-turn.y, turn.x, 0);
+        transform.localRotation = Quaternion.Euler(-turn.y, 0, 0);
+        transform.parent.localRotation = Quaternion.Euler(0, turn.x, 0);
     }
 }

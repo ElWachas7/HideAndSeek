@@ -41,18 +41,17 @@ public class PlayerBehaviour: MonoBehaviour
 
     void Update()
     {
-        movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        //movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        var horizontalInput = Input.GetAxisRaw("Horizontal");
+        var verticalInput = Input.GetAxisRaw("Vertical");
+
+        movementInput = (transform.forward * verticalInput) + (transform.right * horizontalInput);
+        movementInput.Normalize();
+
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             UIManager.OnTryPause();
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            GameManager.Instance.AddPoints();
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            GameManager.Instance.LoseGame();
         }
     }
 
