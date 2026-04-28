@@ -11579,6 +11579,8 @@ MonoBehaviour:
   winUI: {fileID: 1139750578}
   loseUI: {fileID: 564768096}
   inGameUI: {fileID: 959060933}
+  slider: {fileID: 0}
+  scoreUI: {fileID: 0}
 --- !u!4 &909173461
 Transform:
   m_ObjectHideFlags: 0

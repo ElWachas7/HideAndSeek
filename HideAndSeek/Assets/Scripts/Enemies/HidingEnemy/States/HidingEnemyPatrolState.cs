@@ -25,34 +25,36 @@ public class HidingEnemyPatrolState : State<EntityStates>
     }
     public override void Awake()
     {
-        //base.Awake();
+        base.Awake();
         SetNewHidingSpot();
-        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee);
-        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee); // guardo evento de flee en variable 
+                                                                              // para poder desuscribirse luego 
+        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo a evento de flee
     }
     public override void Execute()
     {
-        //base.Execute();
+        base.Execute();
         if (newHidingSpot != null)
             Patrol();
     }
     public override void Sleep()
     {
         base.Sleep();
-        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo
+        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo a evento de flee
     }
     private void SetNewHidingSpot()
     {
-        newHidingSpot = GameManager.Instance.GetHidingSpot().Transform;
-        // se calcula una ruta desde nuestra pos hasta el hiding spot
+        newHidingSpot = GameManager.Instance.GetHidingSpot().Transform; // le pide una nueva hiding spot al GameManager
+
         if (NavMesh.CalculatePath(_entity.transform.position, newHidingSpot.position, NavMesh.AllAreas, path))
-        {
-            corners = path.corners; // extraer vertices del path
-            currentCorner = 0;
+        {   // calcula el camino mas corto navegable entre la pos actual del hiding enemy y el hiding spot
+            // utilizando cualquier superficie del nav mesh, y el resultado se guarda en path
+            corners = path.corners; // los corners son los puntos del camino que hay que recorrer en orden
+            currentCorner = 0; // empezar desde el primer punto del camino
         }
     }
     private void Patrol()
-    {
+    {    
         if (corners == null || corners.Length == 0 || currentCorner >= corners.Length) return;
 
         Vector3 targetWaypoint; // apunta a la corner actual del nav mesh
