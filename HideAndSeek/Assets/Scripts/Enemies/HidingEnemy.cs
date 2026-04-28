@@ -33,6 +33,10 @@ public class HidingEnemy : MonoBehaviour, ISteering
     private bool hasSeenTarget;
     private float losTimer = 0f;
 
+    public bool HasSeenTarget => hasSeenTarget;
+
+    public event System.Action OnTargetSpotted;
+
     void Start()
     {
         viewLos = GetComponent<LineOfSight>();
@@ -59,13 +63,15 @@ public class HidingEnemy : MonoBehaviour, ISteering
         if (IsTargetOnLOS() && !hasSeenTarget) // activa el bool para evitar que se ejecute miles de veces y arranca un contador de 10 segundos
         {
             hasSeenTarget = true;
-            
+            losTimer = 0f;
+            OnTargetSpotted?.Invoke();
         }
         if (hasSeenTarget)
         {
             losTimer += Time.deltaTime;
             if (losTimer > 10f)
                 hasSeenTarget = false;
+            losTimer = 0f;
             Debug.Log(losTimer);
         }  
 }
