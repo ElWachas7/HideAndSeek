@@ -36,8 +36,8 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     [SerializeField] private float patrolSpeed;
     [SerializeField] private float rotationSpeed;
     private Transform currentPoint;
+    private bool resetPatrol;
     private float idleTimer;
-    private bool hasPatrolRoute;
     public List<Transform> patrolRoute;
 
     [SerializeField]
@@ -88,6 +88,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         {
             hasLastKnownPosition = true;
             seeingEnemyRightNow = true;
+            resetPatrol = true;
             enemyReference = t;
             lastKnownPosition = t.transform.position;
             return true;
@@ -117,11 +118,11 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     }
     private NodeState GetPatrolRoute() 
     {
-        if (patrolRoute.Count == 0) 
+        if (patrolRoute.Count == 0 || resetPatrol) 
         {
             patrolRoute = GameManager.Instance.GetPath().pathway;
             currentPoint = patrolRoute[0];
-            hasPatrolRoute = true;
+            resetPatrol = false;
         }
         else { currentPoint = patrolRoute[0]; }
             return NodeState.Success;
@@ -169,8 +170,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     private NodeState CalculatePathToPoint(Transform Point)
     {
         if (Point == null) return NodeState.Failure;
-        if (hasPatrolRoute) 
-        {
             path = new NavMeshPath();
             if (NavMesh.CalculatePath(transform.position, Point.position, NavMesh.AllAreas, path))
             {
@@ -179,8 +178,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
                 return NodeState.Success;
             }
             return NodeState.Failure;
-        }
-        return NodeState.Success;
     }
     private NodeState Chase() 
     {

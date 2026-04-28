@@ -248,18 +248,19 @@ MonoBehaviour:
   _clos: {fileID: 0}
   agent: {fileID: 0}
   obstacleAvoidance: {fileID: 0}
-  radius: 1.15
-  angle: 28.04
-  personalArea: 1.3
-  velocity: {x: 0, y: 0, z: 0}
+  radius: 1
+  angle: 120
+  personalArea: 3
+  _obsMask:
+    serializedVersion: 2
+    m_Bits: 128
   maxSpeed: 5
   maxForce: 10
-  predictionTime: 1
+  predictionTime: 0.5
   idleDuration: 3
   patrolSpeed: 2
   rotationSpeed: 2
   patrolRoute: []
-  chaseSpeed: 5
 --- !u!195 &4657810509970390100
 NavMeshAgent:
   m_ObjectHideFlags: 0

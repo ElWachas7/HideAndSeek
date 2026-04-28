@@ -379,7 +379,7 @@ MonoBehaviour:
   angle: 89.3
   obsMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
 --- !u!195 &4730655666627641749
 NavMeshAgent:
   m_ObjectHideFlags: 0
