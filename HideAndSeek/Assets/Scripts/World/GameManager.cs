@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        ChangeState(GameState.Menu);
         ResetHidingSpots();
     }
 
@@ -47,44 +48,58 @@ public class GameManager : MonoBehaviour
             case GameState.Menu:
                 Time.timeScale = 0f;
                 Debug.Log("Menu");
+                UnityEngine.Cursor.visible = true;
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Playing:
                 isAlive = true;
                 Time.timeScale = 1f;
                 Debug.Log("Playing");
+                UnityEngine.Cursor.visible = false;
+                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 break;
             case GameState.Paused:
                 Time.timeScale = 0f;
                 Debug.Log("Paused");
+                UnityEngine.Cursor.visible = true;
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Won:
                 Time.timeScale = 0f;
                 Debug.Log("Won");
+                UnityEngine.Cursor.visible = true;
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Lost:
                 Time.timeScale = 0f;
                 Debug.Log("Lost");
+                UnityEngine.Cursor.visible = true;
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Resumed:
                 Time.timeScale = 1f;
                 Debug.Log("Resumed");
+                Time.timeScale = 1f;
+                UnityEngine.Cursor.visible = false;
+                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 break;
         }
     }
 
     public void MainMenu()
     {
-        ChangeState(GameState.Menu);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
     public void StartGame()
     {
         ChangeState(GameState.Playing);
+        Debug.Log("PLAYING");
     }
 
     public void PauseGame()
     {
-         ChangeState(GameState.Paused);
+        ChangeState(GameState.Paused);
         isPaused = true;
     }
 
@@ -158,10 +173,13 @@ public class GameManager : MonoBehaviour
     // la funcion la llame Add pq al restar puntos el puesto en el que termina el player aumenta
     public void AddPoints()
     {
-        points--;
-        if(points <= 1)
+        if (points <= 1)
         {
             WinGame();
+        }
+        else 
+        {
+            points--;
         }
     }
 }
