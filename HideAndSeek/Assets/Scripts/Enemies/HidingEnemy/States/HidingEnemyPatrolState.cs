@@ -15,6 +15,8 @@ public class HidingEnemyPatrolState : State<EntityStates>
     private Vector3[] corners;
     private int currentCorner = 0;
 
+    private System.Action _OnTargetSpotted;
+
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
         _entity = entity;
@@ -26,12 +28,19 @@ public class HidingEnemyPatrolState : State<EntityStates>
     {
         //base.Awake();
         SetNewHidingSpot();
+        _OnTargetSpotted = () => _sm.ChangeState(EntityStates.Flee);
+        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
     }
     public override void Execute()
     {
         //base.Execute();
         if (newHidingSpot != null)
             Patrol();
+    }
+    public override void Sleep()
+    {
+        base.Sleep();
+        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo
     }
     private void SetNewHidingSpot()
     {
@@ -40,7 +49,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
         if (newHidingSpot == null)
         {
             // no hay spots disponibles, volver a idle
-            stateMachine.ChangeState(EntityStates.Idle);
+            _sm.ChangeState(EntityStates.Idle);
             return;
         }
         // se calcula una ruta desde nuestra pos hasta el hiding spot
@@ -51,8 +60,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
         }
         else
         {
-            Debug.LogWarning("no se pudo calcular un path al hiding spot");
-            stateMachine.ChangeState(EntityStates.Idle);
+            _sm.ChangeState(EntityStates.Idle);
         }
 
     }
@@ -88,7 +96,7 @@ public class HidingEnemyPatrolState : State<EntityStates>
             currentCorner++;
             if (currentCorner >= corners.Length)
             {
-                stateMachine.ChangeState(EntityStates.Idle);
+                _sm.ChangeState(EntityStates.Idle);
             }
         }
     }

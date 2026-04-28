@@ -8,6 +8,8 @@ public class HidingEnemyIdleState : State<EntityStates>
     private float _timer;
     private float idleTime;
 
+    private System.Action _OnTargetSpotted;
+
     public HidingEnemyIdleState(HidingEnemy entity, StateMachine<EntityStates> sm) : base(sm)
     {
         _entity = entity;
@@ -15,12 +17,15 @@ public class HidingEnemyIdleState : State<EntityStates>
     public override void Awake()
     {
         base.Awake();
-        _timer = 0f;
+        _timer = 0f; // reiniciar tiempo cada vez q entra a idle
         idleTime = Random.Range(10f, 20f);
+        _OnTargetSpotted = () => _sm.ChangeState(EntityStates.Flee);
+        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo
     }
     public override void Execute()
     {
         base.Execute();
+
         _timer += Time.deltaTime;
 
         float angle = Mathf.Sin(Time.time * 2f) * 180f;
@@ -28,8 +33,12 @@ public class HidingEnemyIdleState : State<EntityStates>
 
         if (_timer >= idleTime)
         {
-            stateMachine.ChangeState(EntityStates.Patrol);
-            Debug.Log("cambia a patrol");
+            _sm.ChangeState(EntityStates.Patrol);
         }
+    }
+    public override void Sleep()
+    {
+        base.Sleep();
+        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo
     }
 }
