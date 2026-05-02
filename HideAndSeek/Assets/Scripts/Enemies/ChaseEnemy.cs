@@ -169,7 +169,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     }
     private NodeState CalculatePathToPoint(Transform Point)
     {
-        if (Point == null) return NodeState.Failure;
+        //if (Point == null) return NodeState.Failure;
             path = new NavMeshPath();
             if (NavMesh.CalculatePath(transform.position, Point.position, NavMesh.AllAreas, path))
             {
@@ -182,7 +182,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     private NodeState Chase() 
     {
         Vector3 steering;
-
         if (seeingEnemyRightNow)
         {
             if (Vector3.Distance(transform.position, enemyReference.transform.position) < 3f)
@@ -206,7 +205,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         //Convertir el steering en una direccion y luego aplicar el avoidance
         velocity += steering * Time.deltaTime;
-        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
         Vector3 dir = velocity.normalized;
 
@@ -236,14 +235,14 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
 
     // ---- Steering Behaviour ----
-    Vector3 Seek(Vector3 targetPos)
+    Vector3 Seek(Vector3 targetPos) // posicion guardada
     {
         Vector3 desired = (targetPos - transform.position).normalized * maxSpeed;
         Vector3 steering = desired - velocity;
 
         return Vector3.ClampMagnitude(steering, maxForce);
     }
-    Vector3 Pursuit(ISteering target)
+    Vector3 Pursuit(ISteering target) // posicion actualizada
     {
         Vector3 futurePos = target.transform.position + target.Velocity * predictionTime;
 

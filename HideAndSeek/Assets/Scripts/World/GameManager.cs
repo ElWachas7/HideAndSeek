@@ -13,8 +13,6 @@ public class GameManager : MonoBehaviour
     private bool isAlive;
     public event Action OnGameOver;
     public event Action OnGameWin;
-
-    public List<HidingEnemy> hidingEnemies;
     public List<HidingSpot> hidingSpots;
 
     public int Points => points;
