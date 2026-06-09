@@ -95,7 +95,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         return false;
     }
 
-    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaños de las variables de obstacle avoidance
+    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaï¿½os de las variables de obstacle avoidance
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, obsRadius); 

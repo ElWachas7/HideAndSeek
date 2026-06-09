@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public List<MyPath> paths = new List<MyPath>();
+    public List<MyNode> nodes = new List<MyNode>();
     public static GameManager Instance;
     public enum GameState { Menu, Playing, Paused, Won, Lost, Resumed }
     [SerializeField] private GameState currentState;
@@ -22,6 +23,8 @@ public class GameManager : MonoBehaviour
     public bool IsPaused => isPaused;
     private bool isPaused = false;
 
+    private float chanceRemoved;
+
     void Awake()
     {
         if (Instance == null)
@@ -37,6 +40,30 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.Menu);
         ResetHidingSpots();
+
+       
+        
+    }
+
+    // esto es de debugeo, lo fleto apenas pueda
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            MyNode selectedNode = GetNode();
+            if (selectedNode != null)
+            {
+                Debug.Log("salio: " + selectedNode.nodeName);
+                foreach (MyNode node in nodes)
+                {
+                    Debug.Log(node.nodeName + "chance: " + node.chance);
+                }
+            }
+            else
+            {
+                Debug.Log("vacio");
+            }
+        }
     }
     public void ChangeState(GameState newState)
     {
@@ -146,6 +173,8 @@ public class GameManager : MonoBehaviour
 
         return selectedSpot;
     }
+
+    // borrar despues de que funcione GetNode
     public MyPath GetPath()
     {
         Dictionary<MyPath, float> dict = new Dictionary<MyPath, float>();
@@ -157,6 +186,30 @@ public class GameManager : MonoBehaviour
         }
 
         return MyRandom.RouletteWheelSelection(dict);
+    }
+    public MyNode GetNode()
+    {
+        Dictionary<MyNode, float> dict = new Dictionary<MyNode, float>();
+
+        foreach (MyNode node in nodes)
+        {
+            float chance = node.chance;
+            dict.Add(node, chance);
+        }
+        MyNode selectedNode = MyRandom.RouletteWheelSelection(dict);
+
+        if (selectedNode != null)
+        {
+            float addedChance = 2f / (nodes.Count - 1);
+            foreach (MyNode node in nodes)
+            {
+                if (node == selectedNode)
+                    node.chance -= 2f; 
+                else
+                    node.chance += addedChance; 
+            }
+        }
+        return selectedNode;
     }
 
     // la funcion la llame Add pq al restar puntos el puesto en el que termina el player aumenta
