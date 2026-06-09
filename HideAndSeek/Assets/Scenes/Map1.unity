@@ -3160,6 +3160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 339272522}
+  - component: {fileID: 339272523}
   m_Layer: 7
   m_Name: Hiding Spot (2)
   m_TagString: Untagged
@@ -3182,6 +3183,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 702789546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &339272523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339272521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ff973e258e224b896a55da2219bf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {fileID: 339272522}
+  chance: 10
+  nodeName: Nodo 3
 --- !u!1 &348609630
 GameObject:
   m_ObjectHideFlags: 0
@@ -7993,6 +8009,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 933942562}
+  - component: {fileID: 933942563}
   m_Layer: 7
   m_Name: Hiding Spot (1)
   m_TagString: Untagged
@@ -8015,6 +8032,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 702789546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &933942563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933942561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ff973e258e224b896a55da2219bf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {fileID: 933942562}
+  chance: 10
+  nodeName: Nodo 2
 --- !u!1 &959503950
 GameObject:
   m_ObjectHideFlags: 0
@@ -10193,6 +10225,10 @@ MonoBehaviour:
     - {fileID: 669199368}
     chance: 50
     pathName: 4B
+  nodes:
+  - {fileID: 1435225032}
+  - {fileID: 933942563}
+  - {fileID: 339272523}
   currentState: 0
   hidingSpots:
   - Transform: {fileID: 1435225031}
@@ -11659,6 +11695,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1435225031}
+  - component: {fileID: 1435225032}
   m_Layer: 7
   m_Name: Hiding Spot
   m_TagString: Untagged
@@ -11681,6 +11718,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 702789546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1435225032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435225030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ff973e258e224b896a55da2219bf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {fileID: 1435225031}
+  chance: 10
+  nodeName: Nodo 1
 --- !u!1 &1438266189
 GameObject:
   m_ObjectHideFlags: 0
