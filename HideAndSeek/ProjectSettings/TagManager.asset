@@ -16,7 +16,7 @@ TagManager:
   - ChaseAgent
   - HidingAgent
   - Boid
-  - 
+  - PathNode
   - 
   - 
   - 
