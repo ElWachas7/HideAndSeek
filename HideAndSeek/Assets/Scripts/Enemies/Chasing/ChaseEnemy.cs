@@ -55,7 +55,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         _clos = GetComponent<ChaseLineOfSight>();
         obstacleAvoidance = new ObstacleAvoidance(this.transform,radius,angle,personalArea, _obsMask);
 
-
         ActionNode idle = new ActionNode(Idle);
         ActionNode getPatrolRoute = new ActionNode(GetPatrolRoute);
         ActionNode moveToPoint = new ActionNode(() => MoveToPoint(currentPoint));
@@ -74,7 +73,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         QuestionNode isInLos = new QuestionNode(IsInLos, chase, setPatrol);
 
         root = isInLos;
-
     }
     void Update()
     {

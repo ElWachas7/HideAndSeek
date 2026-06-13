@@ -51,10 +51,10 @@ public class GameManager : MonoBehaviour
             MyNode selectedNode = GetNode();
             if (selectedNode != null)
             {
-                Debug.Log("salio: " + selectedNode.nodeName);
+                Debug.Log("salio: " + selectedNode.NodeName);
                 foreach (MyNode node in nodes)
                 {
-                    Debug.Log(node.nodeName + "chance: " + node.chance);
+                    Debug.Log(node.NodeName + "chance: " + node.chance);
                 }
             }
             else
