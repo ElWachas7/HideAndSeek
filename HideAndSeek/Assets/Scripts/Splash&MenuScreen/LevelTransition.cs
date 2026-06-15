@@ -11,7 +11,10 @@ public class LevelTransition : MonoBehaviour
     {
         StartCoroutine(Countdown());
     }
-
+    public void ChangeScene(string scene)
+    {
+        SceneManager.LoadScene(scene);
+    }
     private IEnumerator Countdown()
     {
         for (int i = 3; i > 0; i--)
@@ -22,6 +25,6 @@ public class LevelTransition : MonoBehaviour
             }
             yield return new WaitForSeconds(1f);
         }
-        SceneManager.LoadScene("Map1");
+        SceneManager.LoadScene("MainMenu");
     }
 }
