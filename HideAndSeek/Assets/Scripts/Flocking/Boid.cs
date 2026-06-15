@@ -1,8 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Boid : SteeringEntity
+{
+    [SerializeField] private Flockonfiguration flockConfig;
+    [SerializeField] private LayerMask boidMask;
+
+    private Transform myTransform;
+    private Collider myCollider;
+
+    // Propiedades públicas para que los comportamientos accedan de forma segura
+    public Vector3 MyPosition => myTransform.position;
+    public Collider MyCollider => myCollider;
+    public float MaxSpeed => _maxSpeed; // Asumiendo que _maxSpeed viene de SteeringEntity
+
+    private void Awake()
+    {
+        myTransform = transform;
+        myCollider = GetComponent<Collider>();
+    }
+
+    void Start()
+    {
+        AddForce(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized * _maxSpeed);
+    }
+
+    void Update()
+    {
+        if (flockConfig != null)
+        {
+            Flocking();
+        }
+        Move();
+    }
+
+    private void Flocking()
+    {
+        Vector3 combinedForce = Vector3.zero;
+
+        // Iteramos por cada comportamiento que hayas arrastrado a la lista
+        for (int i = 0; i < flockConfig.behaviors.Count; i++)
+        {
+            var weightedBehavior = flockConfig.behaviors[i];
+            if (weightedBehavior.behaviour == null) continue;
+
+            // Optimizamos: Buscamos vecinos usando el radio específico de este comportamiento
+            var boidsInRange = Physics.OverlapSphere(MyPosition, weightedBehavior.radius, boidMask);
+
+            // Calculamos la fuerza delegándola al objeto de comportamiento y multiplicamos por su peso
+            Vector3 force = weightedBehavior.behaviour.CalculateForce(this, boidsInRange, weightedBehavior.radius);
+            combinedForce += force * weightedBehavior.weight;
+        }
+
+        AddForce(combinedForce);
+    }
+
+    // Métodos puente por si tus comportamientos necesitan llamar funciones heredadas
+    public Vector3 Seek(Vector3 target) => base.Seek(target);
+    public Vector3 CalculateSteering(Vector3 target) => base.CalculateSteering(target);
+
+    private void OnDrawGizmos()
+    {
+        if (flockConfig == null) return;
+
+        // Dibuja los radios de los comportamientos activos automáticamente
+        Gizmos.color = Color.green;
+        foreach (var wb in flockConfig.behaviors)
+        {
+            if (wb.behaviour != null)
+            {
+                Gizmos.DrawWireSphere(transform.position, wb.radius);
+            }
+        }
+    }
+}
+/*public class Boid : SteeringEntity
 {
     [SerializeField] private float separationRadius;
     [SerializeField] private float cohesionRadius;
@@ -116,5 +188,5 @@ public class Boid : SteeringEntity
     }
 
 }
-
+*/
 
