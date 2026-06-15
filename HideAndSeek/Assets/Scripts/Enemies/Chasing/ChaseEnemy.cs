@@ -89,7 +89,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     {
         if (_clos.HasTarget(out ISteering t))
         {
-            Debug.Log("LOS = True");
             _hasLastKnownPosition = true;
             _seeingEnemyRightNow = true;
             resetPatrol = true;
@@ -99,7 +98,6 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         }
         else if (_hasLastKnownPosition)
         {
-            Debug.Log("LOS = True HasLastKnownPosition");
             _seeingEnemyRightNow = false;
             return true;
         }
@@ -175,6 +173,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         IPathNode _currentNode = _path[0];
         Vector3 targetPos = _currentNode.Position;
+        targetPos.y = transform.position.y;
         Vector3 dir = (targetPos - transform.position).normalized;
         Vector3 dirobs = _obstacleAvoidance.GetDir(dir);
 
@@ -249,6 +248,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     // ---- Steering Behaviour ----
     Vector3 Seek(Vector3 targetPos) // posicion guardada
     {
+        targetPos.y = transform.position.y;
         Vector3 desired = (targetPos - transform.position).normalized * _maxSpeed;
         Vector3 steering = desired - _velocity;
 
@@ -257,7 +257,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     Vector3 Pursuit(ISteering target) // posicion actualizada
     {
         Vector3 futurePos = target.transform.position + target.Velocity * _predictionTime;
-
+        futurePos.y = transform.position.y;
         Vector3 desired = (futurePos - transform.position).normalized * _maxSpeed;
         Vector3 steering = desired - _velocity;
 

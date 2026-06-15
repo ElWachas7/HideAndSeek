@@ -46,7 +46,7 @@ public class GenericPathfinding
 
         pending.Enqueue(start, 0);
         cost[start] = 0;
-        Debug.Log("TheataAstar Generated");
+        //Debug.Log("TheataAstar Generated");
         while (!pending.IsEmpty)
         {
             watchdog--;
