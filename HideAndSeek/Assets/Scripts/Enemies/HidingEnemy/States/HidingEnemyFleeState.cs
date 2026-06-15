@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -31,6 +29,7 @@ public class HidingEnemyFleeState : State<EntityStates>
     }
     private void Flee()
     {
+        Debug.Log("Flee ejecutandose");
         Vector3 targetPos = _entity.Target.transform.position; // se guarda la posicion el chasing enemy
 
         Vector3 desiredVelocity = (_entity.transform.position - targetPos).normalized * _entity.Speed; // se calcula la dir opuesta a chasing enemy (a donde quiero ir)

@@ -1,27 +1,37 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1000)]
 public class GameManager : MonoBehaviour
 {
-    public List<MyPath> paths = new List<MyPath>();
-    public static GameManager Instance;
-    public enum GameState { Menu, Playing, Paused, Won, Lost, Resumed }
+    #region SerializeField
     [SerializeField] private GameState currentState;
+    [SerializeField] private Dictionary<MyNode, float> _hidingSpots = new Dictionary<MyNode, float>();
+    [SerializeField] private Dictionary<MyNode, float> _searchingSpots = new Dictionary<MyNode, float>();
+    #endregion
+
+    #region Variables
+    private bool isAlive;
+    private int points = 5;
+    private bool isPaused = false;
+    #endregion
+
+    #region Properties
     public GameState CurrentState => currentState;
     public bool IsAlive => isAlive;
-    private bool isAlive;
+    public int Points => points;
+    public bool IsPaused => isPaused;
+    #endregion
+
+    #region Events/Global
+    public static GameManager Instance;
     public event Action OnGameOver;
     public event Action OnGameWin;
+    #endregion
 
-    public List<HidingEnemy> hidingEnemies;
-    public List<HidingSpot> hidingSpots;
-
-    public int Points => points;
-    private int points = 5;
-    public bool IsPaused => isPaused;
-    private bool isPaused = false;
-
+    #region MagicMethods
     void Awake()
     {
         if (Instance == null)
@@ -38,13 +48,46 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.Menu);
         ResetHidingSpots();
     }
+    // esto es de debugeo, lo fleto apenas pueda
+    public void Update()
+    {
+        /*
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            MyNode selectedNode = GetSearchingSpot();
+            if (selectedNode != null)
+            {
+                Debug.Log($"OUTPUT: {selectedNode.NodeName} con valor: {_searchingSpots[selectedNode]} ");
+                foreach (var node in _searchingSpots)
+                {
+                    Debug.Log(node.Key.NodeName + "chance: " + node.Value);
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            MyNode selectedNode = GetHidingSpot();
+            if (selectedNode != null)
+            {
+                Debug.Log($"OUTPUT: {selectedNode.NodeName} con valor: {_hidingSpots[selectedNode]} ");
+                foreach (var node in _hidingSpots)
+                {
+                    Debug.Log(node.Key.NodeName + "chance: " + node.Value);
+                }
+            }
+        }
+        */
+    }
+    #endregion
+
+    #region GameLoop
     public void ChangeState(GameState newState)
     {
         currentState = newState;
         switch (currentState)
         {
             case GameState.Menu:
-                Time.timeScale = 0f;
+                Time.timeScale = 1f;
                 Debug.Log("Menu");
                 UnityEngine.Cursor.visible = true;
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
@@ -77,7 +120,6 @@ public class GameManager : MonoBehaviour
             case GameState.Resumed:
                 Time.timeScale = 1f;
                 Debug.Log("Resumed");
-                Time.timeScale = 1f;
                 UnityEngine.Cursor.visible = false;
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 break;
@@ -119,56 +161,84 @@ public class GameManager : MonoBehaviour
             LoseGame();
         }
     }
-    private void ResetHidingSpots()
-    {
-        foreach (var spot in hidingSpots)
-        {
-            spot.isTaken = false;
-        }
-    }
-    public HidingSpot GetHidingSpot()
-    {
-        Dictionary<HidingSpot, float> dict = new Dictionary<HidingSpot, float>();
-
-        foreach (HidingSpot spot in hidingSpots)
-        {
-            if (spot.isTaken)
-                continue;
-            dict.Add(spot, spot.chance);
-        }
-
-        HidingSpot selectedSpot = MyRandom.RouletteWheelSelection(dict);
-       
-        if (selectedSpot != null)
-        {
-            selectedSpot.isTaken = true;
-        }
-
-        return selectedSpot;
-    }
-    public MyPath GetPath()
-    {
-        Dictionary<MyPath, float> dict = new Dictionary<MyPath, float>();
-
-        foreach (MyPath path in paths)
-        {
-            float chance = path.chance;
-            dict.Add(path, chance);
-        }
-
-        return MyRandom.RouletteWheelSelection(dict);
-    }
-
-    // la funcion la llame Add pq al restar puntos el puesto en el que termina el player aumenta
     public void AddPoints()
     {
         if (points <= 1)
         {
             WinGame();
         }
-        else 
+        else
         {
             points--;
         }
     }
+    #endregion
+
+    #region PathPoints
+    public void AddHidingSpot(MyNode node, float chance)
+    {
+        if (!_hidingSpots.ContainsKey(node))
+        {
+            _hidingSpots.Add(node, chance);
+        }
+    }
+    public void AddSearchingSpot(MyNode node, float chance)
+    {
+        if (!_searchingSpots.ContainsKey(node))
+        {
+            _searchingSpots.Add(node, chance);
+        }
+    }
+    private void ResetHidingSpots()
+    {
+        if (_hidingSpots == null || _searchingSpots == null)
+            return;
+
+        foreach (var node in _hidingSpots)
+        {
+            _hidingSpots[node.Key] = node.Key.Chance;
+        }
+        foreach (var node in _searchingSpots)
+        {
+            _searchingSpots[node.Key] = node.Key.Chance;
+        }
+        Debug.Log("Reset Chances Succesfully");
+    }
+    public void UpdateNodesValues(MyNode node, Dictionary<MyNode, float> dict)
+    {
+        // esto guarda las chances del nodo, y las reparte 1 por 1 entre los otros nodos
+        // el nodo actual queda con 0 chances de aparecer luego
+        // pero cuando se van eligiendo otros nodos este va a ir ganando puntito a puntito hasta que vuelva a ser el mas valorado
+        float valueToShare = 0;
+        if (dict.TryGetValue(node, out float value))
+        {
+            valueToShare = value;
+            dict[node] = 0;
+        }
+
+        List<MyNode> keys = new List<MyNode>(dict.Keys);
+
+        while (valueToShare > 0)
+        {
+            foreach (MyNode key in keys)
+            {
+                if (valueToShare <= 0) break;
+                dict[key] += 1f;
+                valueToShare--;
+            }
+        }
+    }
+    public MyNode GetHidingSpot()
+    {
+        MyNode selectedSpot = MyRandom.RouletteWheelSelection(_hidingSpots);
+        UpdateNodesValues(selectedSpot, _hidingSpots);
+        return selectedSpot;
+    }
+    public MyNode GetSearchingSpot()
+    {
+        MyNode selectedSpot = MyRandom.RouletteWheelSelection(_searchingSpots);
+        UpdateNodesValues(selectedSpot, _searchingSpots);
+        return selectedSpot;
+    }
+    #endregion
 }

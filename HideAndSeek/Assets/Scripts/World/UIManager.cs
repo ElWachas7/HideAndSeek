@@ -15,12 +15,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreUI;
     void Start()
     {
-     
         GameManager.Instance.OnGameOver += OnLose;
         GameManager.Instance.OnGameWin += OnWin;
     }
-
-
     private void ClearUI()
     {
         menuUI.gameObject.SetActive(false);
@@ -29,7 +26,6 @@ public class UIManager : MonoBehaviour
         loseUI.gameObject.SetActive(false);
         inGameUI.gameObject.SetActive(false);
     }
-
     private void ClearEvents()
     {
         GameManager.Instance.OnGameOver -= OnLose;
@@ -53,7 +49,7 @@ public class UIManager : MonoBehaviour
 
     public void OnTryPause()
     {
-        if(GameManager.Instance.CurrentState == GameManager.GameState.Menu)
+        if(GameManager.Instance.CurrentState == GameState.Menu)
         {
             return;
         }

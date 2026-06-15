@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstacleAvoidance : MonoBehaviour
@@ -63,9 +61,11 @@ public class ObstacleAvoidance : MonoBehaviour
             avoidDir = -Vector3.Cross(_entity.up, dirToClosestPoint); // obstaculo a la derecha, esquivar a la izquierda
         
         float weight = (_radius - Mathf.Clamp(nearCollDistance - _personalArea, 0, _radius)) / _radius; // weight aumenta cuanto mas cerca esta el obstaculo
+        weight = Mathf.Clamp(weight, 0f, 0.8f);
 
         // normalizado: evita que el agente se frene al lerp entre vectores
-        return Vector3.Lerp(currentSpeed, avoidDir, weight).normalized;
+        Vector3 combined = (currentSpeed + avoidDir * weight).normalized;
+        return combined;
     }
 }
     
