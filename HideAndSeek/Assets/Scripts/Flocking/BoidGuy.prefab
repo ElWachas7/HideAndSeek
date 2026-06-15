@@ -120,8 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxSpeed: 3
   _maxForce: 0.5
-  _velocity: {x: 1, y: 0, z: 1}
-  flockConfig: {fileID: 11400000, guid: 8643656c6fbf89649a3cd7d27a1b786a, type: 2}
+  _velocity: {x: 0, y: 0, z: 0}
+  flockConfig: {fileID: 0}
   boidMask:
     serializedVersion: 2
     m_Bits: 1024

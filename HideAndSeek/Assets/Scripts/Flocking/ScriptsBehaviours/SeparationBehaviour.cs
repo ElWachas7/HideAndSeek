@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Flocking/Behavior/Separation")]
+[CreateAssetMenu(menuName = "Flocking/Behaviour/Separation")]
 public class SeparationBehaviour : BoidBehaviour
 {
     public override Vector3 CalculateForce(Boid boid, Collider[] boidsInRange, float radius)
@@ -17,6 +17,7 @@ public class SeparationBehaviour : BoidBehaviour
 
             var direction = boid.MyPosition - currentCollider.transform.position;
 
+            direction.y = 0f;
             // Evitamos división por cero si están exactamente en la misma posición
             float distance = direction.magnitude;
             if (distance == 0) distance = 0.1f;
