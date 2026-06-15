@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct WeightedBehavior
+public struct WeightedBehaviour
 {
     public BoidBehaviour behaviour;
     [Range(0f, 3f)] public float weight;
@@ -13,5 +13,5 @@ public struct WeightedBehavior
 [CreateAssetMenu(menuName = "Flocking/Flock Configuration")]
 public class Flockonfiguration : ScriptableObject
 {
-    public List<WeightedBehavior> behaviors;
+    public List<WeightedBehaviour> behaviours;
 }

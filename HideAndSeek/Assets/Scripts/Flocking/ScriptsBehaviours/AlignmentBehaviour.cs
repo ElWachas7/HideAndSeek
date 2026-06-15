@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Flocking/Behavior/Alignment")]
-public class AlignmentBehavior : BoidBehaviour
+[CreateAssetMenu(menuName = "Flocking/Behaviour/Alignment")]
+public class AlignmentBehaviour : BoidBehaviour
 {
     public override Vector3 CalculateForce(Boid boid, Collider[] boidsInRange, float radius)
     {

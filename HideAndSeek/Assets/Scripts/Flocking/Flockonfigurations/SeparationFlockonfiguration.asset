@@ -10,15 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2abb88448d577c341a1f33cb36812063, type: 3}
-  m_Name: NormalFlockonfiguration
+  m_Name: SeparationFlockonfiguration
   m_EditorClassIdentifier: 
-  behaviors:
-  - behaviour: {fileID: 11400000, guid: 8fbde101b30a48e46814d5376f117746, type: 2}
-    weight: 1
-    radius: 5
-  - behaviour: {fileID: 11400000, guid: 1f8f4ccb3e6043a42b73591b8baa20bf, type: 2}
-    weight: 1
-    radius: 5
+  behaviours:
   - behaviour: {fileID: 11400000, guid: 70b5d95b19a83d0438a216c9e241d08b, type: 2}
-    weight: 2.5
-    radius: 1.5
+    weight: 3
+    radius: 3
