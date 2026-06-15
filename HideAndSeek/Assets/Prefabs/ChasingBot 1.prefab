@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2254095141300002085}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.02129374, y: -0.03249516, z: 0.007306046, w: 0.99921834}
+  m_LocalRotation: {x: 0.021292506, y: -0.03249556, z: 0.0073061287, w: 0.99921834}
   m_LocalPosition: {x: 0.35, y: 0.87, z: -0.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -39,7 +39,7 @@ Transform:
   - {fileID: 8507550904657449789}
   - {fileID: 7820096083035362309}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 2.466, y: -3.709, z: 0.758}
 --- !u!33 &8290737382443225352
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -135,11 +135,11 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 84
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1379553233335093860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,14 +158,14 @@ MonoBehaviour:
   _wallLayer:
     serializedVersion: 2
     m_Bits: 128
-  _radius: 1
-  _angle: 90
+  _radius: 0.5
+  _angle: 60
   _personalArea: 100
   _obsMask:
     serializedVersion: 2
     m_Bits: 128
   _maxSpeed: 10
-  _rotationSpeed: 5
+  _rotationSpeed: 9
   _maxForce: 5
   _predictionTime: 2
   patrolSpeed: 2
@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 15
-  angle: 175
+  angle: 130
   targetMask:
     serializedVersion: 2
     m_Bits: 512
