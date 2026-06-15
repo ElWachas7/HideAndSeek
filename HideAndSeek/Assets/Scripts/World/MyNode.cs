@@ -1,22 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
+[DefaultExecutionOrder(-900)]
 public class MyNode : MonoBehaviour, IPathNode
 {
     #region Variables
     private List<IPathNode> _neighborsList;
     private readonly HashSet<IPathNode> _neighborsSet = new();
+    [SerializeField] NodeType _nodeType;
     [SerializeField] private string _nodeName;
     [SerializeField] private float _radius = 15;
     [SerializeField] private int _maxNeighbors = 8;
     private Collider[] _overlapBuffer;
     [SerializeField] private LayerMask _wallLayer;
     [SerializeField] private LayerMask _nodeLayer;
-    public float chance;
+    public float Chance;
     #endregion
 
-    #region Gets
-    [Tooltip("start with 10")]
+    #region Parameters
+    [Tooltip("Recomended = same number as spots in the grid")]
     private Vector3 _cachedPosition;
     public string NodeName => _nodeName;
     public Vector3 Position => _cachedPosition;
@@ -31,6 +33,18 @@ public class MyNode : MonoBehaviour, IPathNode
     }
     private void Start()
     {
+        switch (_nodeType)
+        {
+            case NodeType.Hiding:
+                GameManager.Instance.AddHidingSpot(this, Chance);
+                break;
+            case NodeType.Searching:
+                GameManager.Instance.AddSearchingSpot(this, Chance);
+                break;
+            case NodeType.Path:
+                //si queremos que el nodo normal haga algo en el futuro aca podriamos agregar el init
+                break;
+        }
         GenerateNeighbors();
         _neighborsList = new List<IPathNode>(_neighborsSet);
         _neighborsSet.Clear();
@@ -38,7 +52,6 @@ public class MyNode : MonoBehaviour, IPathNode
         _overlapBuffer = null;
     }
     #endregion
-
     private void GenerateNeighbors()
     {
         int count = Physics.OverlapSphereNonAlloc(_cachedPosition, _radius, _overlapBuffer, _nodeLayer, QueryTriggerInteraction.Collide);
@@ -53,7 +66,6 @@ public class MyNode : MonoBehaviour, IPathNode
             {
                 continue;
             }
-
             Vector3 direction = node.Position - _cachedPosition;
             float distance = direction.magnitude;
 
@@ -63,6 +75,12 @@ public class MyNode : MonoBehaviour, IPathNode
             }
             _neighborsSet.Add(node);
         }
+    }
+    public bool HasLineOfSight(IPathNode target, LayerMask wallLayer)
+    {
+        Vector3 direction = target.Position - _cachedPosition;
+        float distance = direction.magnitude;
+        return !Physics.Raycast(_cachedPosition, direction / distance, distance, wallLayer);
     }
 
     #region Gizmos

@@ -32,7 +32,7 @@ public class ChaseLineOfSight : MonoBehaviour
                 continue;
 
 
-            float distanceToTarget = (target.transform.position - transform.position).sqrMagnitude; // Chequeo de distancia
+            float distanceToTarget = (target.transform.position - transform.position).sqrMagnitude;
             _distance = distanceToTarget <= range * range;
 
             Vector3 dirToTarget = target.transform.position - transform.position;

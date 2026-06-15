@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 public class GenericPathfinding
 {
-    /*
     public static List<T> BFS<T>(T start, Func<T, bool> predicate, Func<T, List<T>> GetNeighbors) where T : class?
     {
         var frontier = new Queue<T>();
@@ -38,8 +37,7 @@ public class GenericPathfinding
         return new List<T>();
     }
 
-    public static List<T> ThetaStar<T>(T start, Func<T, bool> isSatisfies, Func<T, List<T>> getConnections,
-        Func<T, T, float> getCost, Func<T, float> heuristic, Func<T, T, bool> inView, int watchdog = 500)
+    public static List<T> ThetaStar<T>(T start, Func<T, bool> isSatisfies, Func<T, List<T>> getConnections,Func<T, T, float> getCost, Func<T, float> heuristic, Func<T, T, bool> inView, int watchdog = 500)
     {
         Dictionary<T, T> parents = new Dictionary<T, T>();
         PriorityQueue<T> pending = new PriorityQueue<T>();
@@ -48,12 +46,12 @@ public class GenericPathfinding
 
         pending.Enqueue(start, 0);
         cost[start] = 0;
+        Debug.Log("TheataAstar Generated");
         while (!pending.IsEmpty)
         {
             watchdog--;
             if (watchdog <= 0) break;
             T current = pending.Dequeue();
-            Debug.Log("TheteStar");
             if (isSatisfies(current))
             {
                 //Path
@@ -90,5 +88,4 @@ public class GenericPathfinding
         }
         return new List<T>();
     }
-    */
 }

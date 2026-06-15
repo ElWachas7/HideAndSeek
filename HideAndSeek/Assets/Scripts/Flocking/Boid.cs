@@ -33,14 +33,7 @@ public class Boid : SteeringEntity
 
     private void Flocking() // se suman las tres fuerzas multiplicadas entre si y se aplican
     {
-        AddForce(
-        Separation() * separationWeight
-        + 
-        Cohesion() * cohesionWeight
-        + 
-        Alignment() * alignmentWeight
-            );
-
+        AddForce( Separation() * separationWeight + Cohesion() * cohesionWeight + Alignment() * alignmentWeight);
     }
 
     private Vector3 Separation() // evita que se choquen
@@ -64,7 +57,6 @@ public class Boid : SteeringEntity
         totalForce /= cont;
 
         return CalculateSteering(totalForce * _maxSpeed);
-
     }
 
     private Vector3 Cohesion() // hace que se queden todos juntos
@@ -112,9 +104,5 @@ public class Boid : SteeringEntity
         Gizmos.DrawWireSphere(transform.position, separationRadius);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, cohesionRadius);
-
     }
-
 }
-
-
