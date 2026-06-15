@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Boid : SteeringEntity
 {
-    [SerializeField] private Flockonfiguration flockConfig;
+     private Flockonfiguration flockConfig;
     [SerializeField] private LayerMask boidMask;
 
     private Transform myTransform;
@@ -34,10 +33,11 @@ public class Boid : SteeringEntity
 
     void Update()
     {
-        if (runtimeBehaviours != null && runtimeBehaviours.Count > 0)
-        {
-            Flocking();
-        }
+        //if (runtimeBehaviours != null && runtimeBehaviours.Count > 0)
+        //{
+        //    Flocking();
+        //}
+        Flocking();
         Move();
     }
 
@@ -71,17 +71,13 @@ public class Boid : SteeringEntity
             // Critical: Update the actual list that runs in Update()
             runtimeBehaviours = new List<WeightedBehaviour>(flockConfig.behaviours);
 
-            // Optional/Highly Recommended: If they are too far apart to see each other,
-            // we redirect them towards the center of the world (0,0,0) so they group up again.
+            // los envia al centro 
             Vector3 flatCenter = new Vector3(0f, myTransform.position.y, 0f);
             Vector3 centerDirection = (flatCenter - myTransform.position).normalized;
 
             AddForce(centerDirection * _maxSpeed);
         }
     }
-
-    public Vector3 Seek(Vector3 target) => base.Seek(target);
-    public Vector3 CalculateSteering(Vector3 target) => base.CalculateSteering(target);
 
     private void OnDrawGizmos()
     {
