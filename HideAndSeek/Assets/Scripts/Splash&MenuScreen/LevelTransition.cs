@@ -6,25 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class LevelTransition : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI redirectNumber;
-    public void StartTransition()
+    public void OnCredits()
     {
-        StartCoroutine(Countdown());
+        SceneManager.LoadScene("SplashScreen");
+        GameManager.Instance.ChangeState(GameState.Menu);
     }
-    public void ChangeScene(string scene)
+    public void OnButtonStart()
     {
-        SceneManager.LoadScene(scene);
+        SceneManager.LoadScene("Map1");
+        GameManager.Instance.ChangeState(GameState.Playing);
     }
-    private IEnumerator Countdown()
+    public void OnMainMenu()
     {
-        for (int i = 3; i > 0; i--)
-        {
-            if (redirectNumber != null)
-            {
-                redirectNumber.text = $"Redirecting {i}";
-            }
-            yield return new WaitForSeconds(1f);
-        }
+        GameManager.Instance.ChangeState(GameState.Menu);
         SceneManager.LoadScene("MainMenu");
     }
 }

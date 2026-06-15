@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-1000)]
 public class GameManager : MonoBehaviour
@@ -48,36 +49,7 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.Menu);
         ResetHidingSpots();
     }
-    // esto es de debugeo, lo fleto apenas pueda
-    public void Update()
-    {
-        /*
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            MyNode selectedNode = GetSearchingSpot();
-            if (selectedNode != null)
-            {
-                Debug.Log($"OUTPUT: {selectedNode.NodeName} con valor: {_searchingSpots[selectedNode]} ");
-                foreach (var node in _searchingSpots)
-                {
-                    Debug.Log(node.Key.NodeName + "chance: " + node.Value);
-                }
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            MyNode selectedNode = GetHidingSpot();
-            if (selectedNode != null)
-            {
-                Debug.Log($"OUTPUT: {selectedNode.NodeName} con valor: {_hidingSpots[selectedNode]} ");
-                foreach (var node in _hidingSpots)
-                {
-                    Debug.Log(node.Key.NodeName + "chance: " + node.Value);
-                }
-            }
-        }
-        */
-    }
+
     #endregion
 
     #region GameLoop
@@ -127,7 +99,8 @@ public class GameManager : MonoBehaviour
     }
     public void MainMenu()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        SceneManager.LoadScene("MainMenu");
+        ChangeState(GameState.Menu);
     }
     public void StartGame()
     {

@@ -1,12 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     // meter los paneles
-
-    [SerializeField] private GameObject menuUI;
     [SerializeField] private GameObject pauseUI;
     [SerializeField] private GameObject winUI;
     [SerializeField] private GameObject loseUI;
@@ -17,10 +16,10 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.OnGameOver += OnLose;
         GameManager.Instance.OnGameWin += OnWin;
+        OnStart();
     }
     private void ClearUI()
     {
-        menuUI.gameObject.SetActive(false);
         pauseUI.gameObject.SetActive(false);
         winUI.gameObject.SetActive(false);
         loseUI.gameObject.SetActive(false);
@@ -32,18 +31,11 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.OnGameWin -= OnWin;
     }
 
-    public void OnMainMenu()
-    {
-        ClearEvents();
-        ClearUI();
-        GameManager.Instance.MainMenu();
-        menuUI.gameObject.SetActive(true);
-    }
 
-    public void OnPlayButton()
+    public void OnStart()
     {
         ClearUI();
-        GameManager.Instance.StartGame();
+        GameManager.Instance.ChangeState(GameState.Playing);
         inGameUI.gameObject.SetActive(true);
     }
 
@@ -65,7 +57,12 @@ public class UIManager : MonoBehaviour
             inGameUI.gameObject.SetActive(true);
         } 
     }
-
+    public void OnMainMenu()
+    {
+        ClearUI();
+        GameManager.Instance.ChangeState(GameState.Menu);
+        SceneManager.LoadScene("MainMenu");
+    }
     public void OnWin()
     {
         ClearUI();
