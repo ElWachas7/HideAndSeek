@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum EntityStates
@@ -8,11 +6,12 @@ public enum EntityStates
     Patrol,
     Flee
 }
+
+[DefaultExecutionOrder(-500)]
 public class HidingEnemy : MonoBehaviour, ISteering
 {
     [Header("Movement")]
     [SerializeField] ChaseEnemy target;
-    [SerializeField] Transform[] wayPoints;
     [SerializeField] float speed;
     [SerializeField] private LineOfSight viewLos;
 
@@ -22,14 +21,17 @@ public class HidingEnemy : MonoBehaviour, ISteering
     [SerializeField] private float obsPersonalArea;
     [SerializeField] private LayerMask obsMask;
 
+    [Header("Theta")]
+    [SerializeField] private LayerMask _nodeLayer;
+    [SerializeField] private LayerMask _wallLayer;
+    public LayerMask NodeLayer => _nodeLayer;
+    public LayerMask WallLayer => _wallLayer;
+
     [Header("Steering")]
     Vector3 velocity;
     public Vector3 Velocity => velocity;
-
     public ChaseEnemy Target => target;
-    public Transform[] WayPoints => wayPoints;
     public float Speed => speed;
-    public LineOfSight ViewLos => viewLos;
 
 
     private StateMachine<EntityStates> _sm;
@@ -69,7 +71,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         {
             _sm.Update();
         }
-        if (IsTargetOnLOS() && !hasSeenTarget) 
+        if (IsTargetOnLOS() && !hasSeenTarget)
         {
             hasSeenTarget = true; // activa el bool para evitar que se ejecute miles de veces 
             losTimer = 0f;
@@ -83,11 +85,15 @@ public class HidingEnemy : MonoBehaviour, ISteering
                 hasSeenTarget = false;
                 losTimer = 0f;
             }
-        }  
-}
+        }
+    }
 
     private bool IsTargetOnLOS() // chequea si en el Line of sight del enemigo (en sus 3 variables) logra detectar al Chasing enemy
     {
+        if(target == null) 
+        {
+            Debug.Log($"{gameObject.name} no tiene referencia al targer");
+        }
         if (viewLos.CheckRange(target.transform) && viewLos.CheckAngle(target.transform) && viewLos.CheckView(target.transform))
         {
             return true;
@@ -95,10 +101,10 @@ public class HidingEnemy : MonoBehaviour, ISteering
         return false;
     }
 
-    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaños de las variables de obstacle avoidance
+    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tamaï¿½os de las variables de obstacle avoidance
     {
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, obsRadius); 
+        Gizmos.DrawWireSphere(transform.position, obsRadius);
 
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, obsPersonalArea);

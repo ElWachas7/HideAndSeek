@@ -1,92 +1,90 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class HidingEnemyPatrolState : State<EntityStates>
 {
     private HidingEnemy _entity;
     private ObstacleAvoidance obstacleAvoidance;
-    private Transform newHidingSpot; // hiding spot actual --> destino actual
-
-    // nav mesh
-    private NavMeshPath path; // camino calculado por nav mesh
-    private Vector3[] corners; // vertices del camino nav mesh para recorrer en orden
-    private int currentCorner = 0; // punto actual del camino
-
-    private System.Action _OnTargetSpotted; // guardo evento de flee en variable para poder desuscribirse luego 
+    private IPathNode _goal;
+    private List<IPathNode> _path;
+    private System.Action _OnTargetSpotted;
 
     public HidingEnemyPatrolState(HidingEnemy entity, StateMachine<EntityStates> sm, ObstacleAvoidance obsAvoidance) : base(sm)
     {
         _entity = entity;
         obstacleAvoidance = obsAvoidance;
-
-        path = new NavMeshPath();
     }
     public override void Awake()
     {
         base.Awake();
         SetNewHidingSpot();
-        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee); // que hacer cuando se triggerea el evento
-        _entity.OnTargetSpotted += _OnTargetSpotted; // suscribo a evento de flee
+        _OnTargetSpotted = () => stateMachine.ChangeState(EntityStates.Flee);
+        _entity.OnTargetSpotted += _OnTargetSpotted;
     }
     public override void Execute()
     {
         base.Execute();
-        if (newHidingSpot != null)
+        if (_path != null && _path.Count > 0)
             Patrol();
     }
     public override void Sleep()
     {
         base.Sleep();
-        _entity.OnTargetSpotted -= _OnTargetSpotted; // desuscribo a evento de flee
+        _entity.OnTargetSpotted -= _OnTargetSpotted;
     }
     private void SetNewHidingSpot()
     {
-        newHidingSpot = GameManager.Instance.GetHidingSpot().Transform; // le pide una nueva hiding spot al GameManager
-
-        if (NavMesh.CalculatePath(_entity.transform.position, newHidingSpot.position, NavMesh.AllAreas, path))
-        {   // calcula el camino mas corto navegable entre la pos actual del hiding enemy y el hiding spot
-            // utilizando cualquier superficie del nav mesh, y el resultado se guarda en path
-            corners = path.corners; // los corners son los puntos del camino que hay que recorrer en orden
-            currentCorner = 0; // empezar desde el primer punto del camino
-        }
+        _goal = GameManager.Instance.GetHidingSpot();
+        IPathNode start = GetClosestNode(_entity.transform.position);
+        _path = GenericPathfinding.ThetaStar<IPathNode>(start, node => node == _goal, node => node.Neighbors.ToList(), (a, b) => Vector3.Distance(a.Position, b.Position), node => Vector3.Distance(node.Position, _goal.Position), (a, b) => a.HasLineOfSight(b, _entity.WallLayer));
     }
     private void Patrol()
-    {    
-        if (corners == null || corners.Length == 0 || currentCorner >= corners.Length) return;
+    {
+        IPathNode current = _path[0];
+        Vector3 targetPos = current.Position;
 
-        Vector3 targetWaypoint; // apunta a la corner actual del nav mesh
-
-        if (currentCorner < corners.Length) // mientras haya vertices por recorrer, apuntar al actual
-        {
-            targetWaypoint = corners[currentCorner];
-        }
-        else
-        {
-            targetWaypoint = newHidingSpot.position; // si ya no hay vertices, apuntar directamente al hiding spot actual
-        }
-
-        Vector3 dirToWaypoint = (targetWaypoint - _entity.transform.position).normalized; // direccion normalizada hacia el waypoint actual
-
-        Vector3 moveDir = obstacleAvoidance.GetDir(dirToWaypoint); // ObstacleAvoidance puede redirigir el movimiento si hay obstaculos
+        Vector3 dir = (targetPos - _entity.transform.position).normalized;
+        Vector3 moveDir = obstacleAvoidance.GetDir(dir);
 
         if (moveDir != Vector3.zero)
         {
             Quaternion rotation = Quaternion.LookRotation(moveDir);
             _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime);
-            // rota (suavemente con el Slerp) hacia la direccion del movimiento
         }
 
-        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime; // moverse en la direccion calculada
+        _entity.transform.position += moveDir * _entity.Speed * Time.deltaTime;
 
-        if (Vector3.Distance(_entity.transform.position, targetWaypoint) <= 2f) // si llego al waypoint actual
+        if (Vector3.Distance(_entity.transform.position, targetPos) <= 2f)
         {
-            currentCorner++;
-            if (currentCorner >= corners.Length) // si recorrio todos los vertices, llego al hiding spot
-            {
+            _path.RemoveAt(0);
+
+            if (_path.Count == 0)
                 stateMachine.ChangeState(EntityStates.Idle);
+        }
+    }
+    private IPathNode GetClosestNode(Vector3 position)
+    {
+        Collider[] cols = Physics.OverlapSphere(position, 5f, _entity.NodeLayer, QueryTriggerInteraction.Collide);
+
+        IPathNode closest = null;
+        float minDist = Mathf.Infinity;
+
+        foreach (Collider col in cols)
+        {
+            if (!col.TryGetComponent(out IPathNode node)) continue;
+
+            Vector3 direction = node.Position - position;
+            float distance = direction.magnitude;
+
+            if (Physics.Raycast(position, direction / distance, distance, _entity.WallLayer)) continue;
+
+            if (distance < minDist)
+            {
+                minDist = distance;
+                closest = node;
             }
         }
+        return closest;
     }
 }

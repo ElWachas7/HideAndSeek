@@ -42,13 +42,6 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
 
     void Update()
     {
-        var horizontalInput = Input.GetAxisRaw("Horizontal");
-        var verticalInput = Input.GetAxisRaw("Vertical");
-
-        movementInput = (transform.forward * verticalInput) + (transform.right * horizontalInput);
-        movementInput.Normalize();
-
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             UIManager.OnTryPause();
@@ -57,6 +50,12 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
 
     private void FixedUpdate()
     {
+        var horizontalInput = Input.GetAxisRaw("Horizontal");
+        var verticalInput = Input.GetAxisRaw("Vertical");
+
+        movementInput = (transform.forward * verticalInput) + (transform.right * horizontalInput);
+        movementInput.Normalize();
+
         ManageStamina();
         sm.Update();
     }

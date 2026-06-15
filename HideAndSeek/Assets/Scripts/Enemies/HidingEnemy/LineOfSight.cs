@@ -6,7 +6,6 @@ public class LineOfSight : MonoBehaviour
     public float range;
     public float angle;
     public LayerMask obsMask;
-    private Collider[] _hits = new Collider[6];
     public bool CheckRange(Transform target) //distancia
     {
         float distanceToTarget = (target.position - transform.position).sqrMagnitude;
