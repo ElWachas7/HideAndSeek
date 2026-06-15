@@ -10,7 +10,7 @@ public class Boid : SteeringEntity
     private Transform myTransform;
     private Collider myCollider;
 
-    private List<WeightedBehaviour> runtimeBehaviours = new List<WeightedBehaviour>();
+    private List<WeightedBehaviour> runtimeBehaviours;
 
     public Vector3 MyPosition => myTransform.position;
     public Collider MyCollider => myCollider;

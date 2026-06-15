@@ -227,6 +227,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     }
     Vector3 Seek(Vector3 targetPos)
     {
+        //cambiar luego
         targetPos.y = transform.position.y;
         Vector3 desired = (targetPos - transform.position).normalized * _maxSpeed;
         Vector3 steering = desired - _velocity;

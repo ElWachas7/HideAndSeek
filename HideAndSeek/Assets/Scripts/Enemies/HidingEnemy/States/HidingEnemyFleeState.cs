@@ -29,7 +29,6 @@ public class HidingEnemyFleeState : State<EntityStates>
     }
     private void Flee()
     {
-        Debug.Log("Flee ejecutandose");
         Vector3 targetPos = _entity.Target.transform.position; // se guarda la posicion el chasing enemy
 
         Vector3 desiredVelocity = (_entity.transform.position - targetPos).normalized * _entity.Speed; // se calcula la dir opuesta a chasing enemy (a donde quiero ir)
@@ -47,21 +46,11 @@ public class HidingEnemyFleeState : State<EntityStates>
             _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, rotation, 5f * Time.deltaTime); // rota hacia a donde quiere ir primero
         }
 
-        // calcula a donde iria si se mueve libremente y lo guarda en nextpos
-        Vector3 nextPos = _entity.transform.position + moveDir * currentSpeed.magnitude * Time.deltaTime;
-
-        NavMeshHit hit; // se crea para que SamplePosition guarde la pos valida que encontro
-        if (NavMesh.SamplePosition(nextPos, out hit, 1f, NavMesh.AllAreas))
-        {
-            // preservar Y original para que no se hunda en el piso
-            // SamplePosition busca el punto valido mas cercano a nextPos, en un radio de 1f
-            // si lo encuentra significa que es seguro moverse ahi
-            _entity.transform.position = new Vector3(hit.position.x, _entity.transform.position.y, hit.position.z); // mueve la posicion de la entity al camino que se encontro
-        }
+        _entity.transform.position += moveDir * currentSpeed.magnitude * Time.deltaTime;
     }
+
     public override void Sleep()
     {
         base.Sleep();
-
     }
 }

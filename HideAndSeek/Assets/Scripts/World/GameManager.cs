@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.Menu:
-                Time.timeScale = 1f;
+                Time.timeScale = 0f;
                 Debug.Log("Menu");
                 UnityEngine.Cursor.visible = true;
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
@@ -145,6 +145,8 @@ public class GameManager : MonoBehaviour
             points--;
         }
     }
+    public void RegisterCoin() { }
+    public void UnregisterCoin() { }
     #endregion
 
     #region PathPoints
