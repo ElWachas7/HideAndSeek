@@ -135,13 +135,15 @@ public class GameManager : MonoBehaviour
     {
         _currentCoins--;
         UIManager.Instance.UpdateUI();
+        if (_currentCoins <= 0)
+            WinGame();
     }
-    public void RegisterEnemy() 
+    public void RegisterEnemy()
     {
         _alliesAlive++;
         UIManager.Instance.UpdateUI();
     }
-    public void UnregisterEnemy() 
+    public void UnregisterEnemy()
     {
         _alliesAlive--;
         UIManager.Instance.UpdateUI();

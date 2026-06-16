@@ -24,7 +24,7 @@ public class Boid : SteeringEntity
     void Start()
     {
         flockConfig = null; // limpia el flockConfig asi no hay behaviours activos
-        runtimeBehaviours.Clear(); // limpia la lista de behaviours
+        //runtimeBehaviours.Clear(); // limpia la lista de behaviours
     }
 
     void Update()
