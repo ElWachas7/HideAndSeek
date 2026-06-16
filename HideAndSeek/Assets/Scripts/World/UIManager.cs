@@ -33,7 +33,6 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.OnGameOver += OnLose;
         GameManager.Instance.OnGameWin += OnWin;
         OnStart();
-
     }
 
     private void ClearUI()

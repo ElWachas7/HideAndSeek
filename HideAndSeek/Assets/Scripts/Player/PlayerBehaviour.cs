@@ -74,7 +74,7 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
     }
     public void Kill()
     {
-        GameManager.Instance.LoseGame();
         gameObject.SetActive(false);
+        GameManager.Instance.LoseGame();
     }
 }
