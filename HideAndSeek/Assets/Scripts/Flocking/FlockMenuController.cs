@@ -3,18 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class FlockMenuController : MonoBehaviour
 {
-    [SerializeField] private Flockonfiguration normalFlockConfig;
-    [SerializeField] private Flockonfiguration alignmentFlockConfig;
+    [SerializeField] private Flockonfiguration normalFlockConfig;      // se asignan cada una de las config en sus
+    [SerializeField] private Flockonfiguration alignmentFlockConfig;   // respectivos Flockonfiguration
     [SerializeField] private Flockonfiguration cohesionFlockConfig;
     [SerializeField] private Flockonfiguration separationFlockConfig;
 
-    private Boid[] activeBoids;
+    private Boid[] activeBoids; // lista de boids en escena
 
     private void Start()
     {
-        activeBoids = FindObjectsByType<Boid>(FindObjectsSortMode.None);
+        activeBoids = FindObjectsByType<Boid>(FindObjectsSortMode.None); // busca la ref de cada boid
     }
-    public void ChangeToNormalFlock()
+    public void ChangeToNormalFlock() // metodos para aplicar en botones UI para cambio de configs
     {
         ApplyPresetToAllBoids(normalFlockConfig);
     }
@@ -35,11 +35,11 @@ public class FlockMenuController : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    private void ApplyPresetToAllBoids(Flockonfiguration selectedPreset)
+    private void ApplyPresetToAllBoids(Flockonfiguration selectedPreset) // cambiar el config actual por el seleccionado
     {
-        if (selectedPreset == null) return;
-        for (int i = 0; i < activeBoids.Length; i++)
-        {
+        if (selectedPreset == null) return; // si es null, retorna para evitar errores
+        for (int i = 0; i < activeBoids.Length; i++) // recorre la lista de los boids de la escena y cambia el config
+        {                                            // y sus behaviours en run time para cada uno
             if (activeBoids[i] != null)
             {
                 activeBoids[i].SetRuntimeConfig(selectedPreset);

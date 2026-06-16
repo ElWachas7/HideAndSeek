@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Boid : SteeringEntity
 {
-     private Flockonfiguration flockConfig;
+    private Flockonfiguration flockConfig;// la config actual
     [SerializeField] private LayerMask boidMask;
 
     private Transform myTransform;
@@ -23,21 +23,16 @@ public class Boid : SteeringEntity
 
     void Start()
     {
-        // FIX 1: We clear flockConfig from inspector so it starts with NO active behaviors.
-        flockConfig = null;
-        runtimeBehaviours.Clear();
-
-        // Give them an initial random push so they are moving from the start
-        //AddForce(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized * _maxSpeed);
+        flockConfig = null; // limpia el flockConfig asi no hay behaviours activos
+        runtimeBehaviours.Clear(); // limpia la lista de behaviours
     }
 
     void Update()
     {
-        //if (runtimeBehaviours != null && runtimeBehaviours.Count > 0)
-        //{
-        //    Flocking();
-        //}
-        Flocking();
+        if (runtimeBehaviours != null && runtimeBehaviours.Count > 0) // solo se activa el flocking si hay algun behaviour activo
+        {
+            Flocking();
+        }
         Move();
     }
 
@@ -59,27 +54,23 @@ public class Boid : SteeringEntity
         AddForce(combinedForce);
     }
 
-    // ====================================================================
-    // FIX 2: Correctly overwrite the runtime list and teleport/reset if needed
-    // ====================================================================
     public void SetRuntimeConfig(Flockonfiguration newConfig)
     {
         if (newConfig != null)
         {
-            flockConfig = newConfig;
+            flockConfig = newConfig; // sobreescribe el config actual con el nuevo
 
             // Critical: Update the actual list that runs in Update()
             runtimeBehaviours = new List<WeightedBehaviour>(flockConfig.behaviours);
 
-            // los envia al centro 
-            Vector3 flatCenter = new Vector3(0f, myTransform.position.y, 0f);
+            Vector3 flatCenter = new Vector3(0f, myTransform.position.y, 0f); // mantiene su pos en eje Y en 0
+            // los envia al centro para que si se alejaron mucho entre si puedan reencontrarse y volver a formarse
             Vector3 centerDirection = (flatCenter - myTransform.position).normalized;
-
             AddForce(centerDirection * _maxSpeed);
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() // gizmos para visualizar el tamaño de los radius
     {
         if (flockConfig == null || flockConfig.behaviours == null) return;
 
@@ -90,89 +81,4 @@ public class Boid : SteeringEntity
         }
     }
 }
-
-
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//public class Boid : SteeringEntity
-//{
-//    [SerializeField] private Flockonfiguration flockConfig;
-//    [SerializeField] private LayerMask boidMask;
-
-//    private Transform myTransform;
-//    private Collider myCollider;
-
-//    private List<WeightedBehaviour> runtimeBehaviours = new List<WeightedBehaviour>();
-//    // Propiedades públicas para que los comportamientos accedan de forma segura
-//    public Vector3 MyPosition => myTransform.position;
-//    public Collider MyCollider => myCollider;
-//    public float MaxSpeed => _maxSpeed; // Asumiendo que _maxSpeed viene de SteeringEntity
-
-//    private void Awake()
-//    {
-//        myTransform = transform;
-//        myCollider = GetComponent<Collider>();
-//    }
-
-//    void Start()
-//    {
-//        if (flockConfig != null)
-//        {
-//            runtimeBehaviours = new List<WeightedBehaviour>(flockConfig.behaviours);
-//        }
-//        AddForce(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized * _maxSpeed);
-//    }
-
-//    void Update()
-//    {
-//        if (runtimeBehaviours != null && runtimeBehaviours.Count > 0)
-//        {
-//            Flocking();
-//        }
-//        Move();
-//    }
-
-//    private void Flocking()
-//    {
-//        Vector3 combinedForce = Vector3.zero;
-
-//        // Iteramos por cada comportamiento que hayas arrastrado a la lista
-//        for (int i = 0; i < runtimeBehaviours.Count; i++)
-//        {
-//            var weightedBehavior = runtimeBehaviours[i];
-//            if (weightedBehavior.behaviour == null) continue;
-
-//            // Optimizamos: Buscamos vecinos usando el radio específico de este comportamiento
-//            var boidsInRange = Physics.OverlapSphere(MyPosition, weightedBehavior.radius, boidMask);
-
-//            // Calculamos la fuerza delegándola al objeto de comportamiento y multiplicamos por su peso
-//            Vector3 force = weightedBehavior.behaviour.CalculateForce(this, boidsInRange, weightedBehavior.radius);
-//            combinedForce += force * weightedBehavior.weight;
-//        }
-
-//        AddForce(combinedForce);
-//    }
-//    public void SetRuntimeConfig(Flockonfiguration newConfig)
-//    {
-//        if (newConfig != null)
-//        {
-//            flockConfig = newConfig;
-//        }
-//    }
-
-//    // Métodos puente por si tus comportamientos necesitan llamar funciones heredadas
-//    public Vector3 Seek(Vector3 target) => base.Seek(target);
-//    public Vector3 CalculateSteering(Vector3 target) => base.CalculateSteering(target);
-
-//    private void OnDrawGizmos()
-//    {
-//        // Dibuja los radios de los comportamientos activos automáticamente
-//        Gizmos.color = Color.green;
-//        foreach (var wb in flockConfig.behaviours)
-//        {
-//            if (wb.behaviour != null) Gizmos.DrawWireSphere(transform.position, wb.radius);
-//        }
-//    }
-//}
 

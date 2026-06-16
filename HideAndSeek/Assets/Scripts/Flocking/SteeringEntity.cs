@@ -25,11 +25,13 @@ public class SteeringEntity : MonoBehaviour
     protected void AddForce(Vector3 force) // suma fuerza a la velocidad actual
     {
         _velocity = Vector3.ClampMagnitude(_velocity + force, _maxSpeed);
+        _velocity.y = 0f;
     }
 
     protected void Move() // lo mueve utilizando la velocidad
     {
         if (_velocity == Vector3.zero) return;
+        _velocity.y = 0f;
         transform.forward = _velocity;
         transform.position += _velocity * Time.deltaTime;
     }
