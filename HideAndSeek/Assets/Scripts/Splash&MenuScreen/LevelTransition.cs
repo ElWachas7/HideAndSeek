@@ -9,7 +9,7 @@ public class LevelTransition : MonoBehaviour
     public void OnCredits()
     {
         SceneManager.LoadScene("SplashScreen");
-        GameManager.Instance.ChangeState(GameState.Menu);
+       //GameManager.Instance.ChangeState(GameState.Menu);
     }
     public void OnButtonStart()
     {
@@ -21,7 +21,7 @@ public class LevelTransition : MonoBehaviour
         GameManager.Instance.ChangeState(GameState.Menu);
         SceneManager.LoadScene("MainMenu");
     }
-    public void OnFlockingMenu() 
+    public void onFlockingScene()
     {
         SceneManager.LoadScene("FlockingScene");
     }
