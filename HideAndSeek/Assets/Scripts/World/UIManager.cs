@@ -78,7 +78,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateStamina(float stamina)
     {
-        slider.value = 1f - stamina / 10f;
+        slider.value = stamina / 10f;
     }
   
 }

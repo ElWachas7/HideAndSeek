@@ -38,6 +38,7 @@ public class PlayerBehaviour: MonoBehaviour, ISteering
         move.AddTransition(idle, PlayerStates.Idle);
 
         sm.SetCurrent(idle);
+        UIManager.UpdateStamina(currentStamina);
     }
 
     void Update()
