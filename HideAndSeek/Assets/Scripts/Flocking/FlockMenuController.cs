@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FlockMenuController : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class FlockMenuController : MonoBehaviour
     public void ChangeToSeparationFlock()
     {
         ApplyPresetToAllBoids(separationFlockConfig);
+    }
+    public void OnChangeMenu() 
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void ApplyPresetToAllBoids(Flockonfiguration selectedPreset)

@@ -12,12 +12,30 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject inGameUI;
     [SerializeField] private Slider slider;
     [SerializeField] private TextMeshProUGUI scoreUI;
+    [SerializeField] private TextMeshProUGUI scoreAlly;
+
+    public static UIManager Instance;
+
+    public void UpdateUI() => UpdateUi();
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         GameManager.Instance.OnGameOver += OnLose;
         GameManager.Instance.OnGameWin += OnWin;
         OnStart();
+
     }
+
     private void ClearUI()
     {
         pauseUI.gameObject.SetActive(false);
@@ -25,18 +43,16 @@ public class UIManager : MonoBehaviour
         loseUI.gameObject.SetActive(false);
         inGameUI.gameObject.SetActive(false);
     }
-    private void ClearEvents()
-    {
-        GameManager.Instance.OnGameOver -= OnLose;
-        GameManager.Instance.OnGameWin -= OnWin;
-    }
-
-
     public void OnStart()
     {
         ClearUI();
         GameManager.Instance.ChangeState(GameState.Playing);
         inGameUI.gameObject.SetActive(true);
+    }
+    private void UpdateUi() 
+    {
+        scoreUI.text = GameManager.Instance.CurrentCoins.ToString();
+        scoreAlly.text = GameManager.Instance.AlliesAlive.ToString();
     }
 
     public void OnTryPause()
@@ -71,8 +87,7 @@ public class UIManager : MonoBehaviour
 
     public void OnLose()
     {
-        ClearUI();
-        scoreUI.text = GameManager.Instance.Points.ToString();
+        scoreUI.text = GameManager.Instance.CurrentCoins.ToString();
         loseUI.gameObject.SetActive(true);
     }
 

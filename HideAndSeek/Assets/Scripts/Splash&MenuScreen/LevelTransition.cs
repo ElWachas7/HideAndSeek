@@ -21,4 +21,8 @@ public class LevelTransition : MonoBehaviour
         GameManager.Instance.ChangeState(GameState.Menu);
         SceneManager.LoadScene("MainMenu");
     }
+    public void OnFlockingMenu() 
+    {
+        SceneManager.LoadScene("FlockingScene");
+    }
 }

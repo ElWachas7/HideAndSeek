@@ -14,16 +14,17 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Variables
-    private bool isAlive;
     private int points = 5;
     private bool isPaused = false;
+    private int _currentCoins;
+    private int _alliesAlive;
     #endregion
 
     #region Properties
     public GameState CurrentState => currentState;
-    public bool IsAlive => isAlive;
-    public int Points => points;
     public bool IsPaused => isPaused;
+    public int CurrentCoins => _currentCoins;
+    public int AlliesAlive => _alliesAlive;
     #endregion
 
     #region Events/Global
@@ -49,7 +50,6 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.Menu);
         ResetHidingSpots();
     }
-
     #endregion
 
     #region GameLoop
@@ -65,7 +65,6 @@ public class GameManager : MonoBehaviour
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 break;
             case GameState.Playing:
-                isAlive = true;
                 Time.timeScale = 1f;
                 Debug.Log("Playing");
                 UnityEngine.Cursor.visible = false;
@@ -127,26 +126,26 @@ public class GameManager : MonoBehaviour
         OnGameOver.Invoke();
         ChangeState(GameState.Lost);
     }
-    public void CheckState()
+    public void RegisterCoin()
     {
-        if (!isAlive)
-        {
-            LoseGame();
-        }
+        _currentCoins++;
+        UIManager.Instance.UpdateUI();
     }
-    public void AddPoints()
+    public void UnregisterCoin()
     {
-        if (points <= 1)
-        {
-            WinGame();
-        }
-        else
-        {
-            points--;
-        }
+        _currentCoins--;
+        UIManager.Instance.UpdateUI();
     }
-    public void RegisterCoin() { }
-    public void UnregisterCoin() { }
+    public void RegisterEnemy() 
+    {
+        _alliesAlive++;
+        UIManager.Instance.UpdateUI();
+    }
+    public void UnregisterEnemy() 
+    {
+        _alliesAlive--;
+        UIManager.Instance.UpdateUI();
+    }
     #endregion
 
     #region PathPoints

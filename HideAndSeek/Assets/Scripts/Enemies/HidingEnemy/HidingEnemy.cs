@@ -35,16 +35,15 @@ public class HidingEnemy : MonoBehaviour, ISteering
 
 
     private StateMachine<EntityStates> _sm;
-
     private bool hasSeenTarget;
     private float losTimer = 0f;
-
     public bool HasSeenTarget => hasSeenTarget;
 
     public event System.Action OnTargetSpotted;
 
     void Start()
     {
+        GameManager.Instance.RegisterEnemy();
         viewLos = GetComponent<LineOfSight>();
         _sm = new StateMachine<EntityStates>();
         var obstacleAvoidance = new ObstacleAvoidance(transform, obsRadius, obsAngle, obsPersonalArea, obsMask);
@@ -116,6 +115,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
 
     public void Kill() // cuando el enemigo colisiona con el, es destruido
     {
+        GameManager.Instance.UnregisterEnemy();
         Destroy(gameObject);
     }
 
