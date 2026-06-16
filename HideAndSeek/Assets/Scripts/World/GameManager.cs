@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -59,7 +58,7 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.Menu:
-                Time.timeScale = 0f;
+                Time.timeScale = 1f;
                 Debug.Log("Menu");
                 UnityEngine.Cursor.visible = true;
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
