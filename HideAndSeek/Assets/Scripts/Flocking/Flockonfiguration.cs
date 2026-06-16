@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +5,12 @@ using UnityEngine;
 public struct WeightedBehaviour
 {
     public BoidBehaviour behaviour;
-    [Range(0f, 3f)] public float weight;
-    public float radius; // Cada comportamiento puede tener su propio radio ahora
+    [Range(0f, 3f)] public float weight; // es la fuerza que tiene el comportamiento
+    public float radius; // cada comportamiento puede tener su propio radio 
 }
 
 [CreateAssetMenu(menuName = "Flocking/Flock Configuration")]
 public class Flockonfiguration : ScriptableObject
 {
-    public List<WeightedBehaviour> behaviours;
+    public List<WeightedBehaviour> behaviours; 
 }
