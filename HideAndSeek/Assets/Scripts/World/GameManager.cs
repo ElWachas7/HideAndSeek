@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameState currentState;
     [SerializeField] private Dictionary<MyNode, float> _hidingSpots = new Dictionary<MyNode, float>();
     [SerializeField] private Dictionary<MyNode, float> _searchingSpots = new Dictionary<MyNode, float>();
+    [SerializeField] private Dictionary<Vector3, float> _points = new Dictionary<Vector3, float>();
     #endregion
 
     #region Variables
@@ -164,6 +165,13 @@ public class GameManager : MonoBehaviour
             _searchingSpots.Add(node, chance);
         }
     }
+    public void AddPoint(Vector3 Position, float chance) 
+    {
+        if (!_points.ContainsKey(Position)) 
+        {
+            _points.Add(Position, chance);
+        }
+    }
     private void ResetHidingSpots()
     {
         if (_hidingSpots == null || _searchingSpots == null)
@@ -179,7 +187,7 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("Reset Chances Succesfully");
     }
-    public void UpdateNodesValues(MyNode node, Dictionary<MyNode, float> dict)
+    public void UpdateNodesValues<T>(T node, Dictionary<T, float> dict)
     {
         // esto guarda las chances del nodo, y las reparte 1 por 1 entre los otros nodos
         // el nodo actual queda con 0 chances de aparecer luego
@@ -191,11 +199,11 @@ public class GameManager : MonoBehaviour
             dict[node] = 0;
         }
 
-        List<MyNode> keys = new List<MyNode>(dict.Keys);
+        List<T> keys = new List<T>(dict.Keys);
 
         while (valueToShare > 0)
         {
-            foreach (MyNode key in keys)
+            foreach (T key in keys)
             {
                 if (valueToShare <= 0) break;
                 dict[key] += 1f;
@@ -214,6 +222,12 @@ public class GameManager : MonoBehaviour
         MyNode selectedSpot = MyRandom.RouletteWheelSelection(_searchingSpots);
         UpdateNodesValues(selectedSpot, _searchingSpots);
         return selectedSpot;
+    }
+    public Vector3 GetPoint() 
+    {
+        Vector3 point = MyRandom.RouletteWheelSelection(_points);
+        UpdateNodesValues(point, _points);
+        return point;
     }
     #endregion
 }

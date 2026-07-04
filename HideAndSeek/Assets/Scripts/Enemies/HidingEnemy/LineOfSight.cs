@@ -22,7 +22,7 @@ public class LineOfSight : MonoBehaviour
         Vector3 dirToTarget = target.position - transform.position;
         return !Physics.Raycast(transform.position, dirToTarget.normalized, dirToTarget.magnitude, obsMask);
     }
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Color myColor = Color.blue;
         myColor.a = 0.5f;

@@ -7,7 +7,7 @@ public enum EntityStates
     Flee
 }
 
-[DefaultExecutionOrder(-500)]
+[DefaultExecutionOrder(-100)]
 public class HidingEnemy : MonoBehaviour, ISteering
 {
     [Header("Movement")]
@@ -100,7 +100,7 @@ public class HidingEnemy : MonoBehaviour, ISteering
         return false;
     }
 
-    private void OnDrawGizmos() // Gizmos para poder visualizar en el editor los tama�os de las variables de obstacle avoidance
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, obsRadius);

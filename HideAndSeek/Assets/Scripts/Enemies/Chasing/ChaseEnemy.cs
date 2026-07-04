@@ -33,6 +33,7 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     private bool resetPatrol;
     private IPathNode _start = null;
     private IPathNode _goal = null;
+    private Vector3 _destination;
     private List<IPathNode> _path = new List<IPathNode>();
 
     [Header("Idle")]
@@ -114,8 +115,11 @@ public class ChaseEnemy : MonoBehaviour, ISteering
             _start = null;
             _path = new List<IPathNode>();
             _velocity = Vector3.zero;
-            _goal = GameManager.Instance.GetSearchingSpot();
+
+            _destination = GameManager.Instance.GetPoint();
             _start = GetClosestNode(transform.position);
+            _goal = GetClosestNode(_destination);
+
             _path = GenericPathfinding.ThetaStar<IPathNode>(
                 _start,
                 node => node == _goal,
@@ -154,26 +158,37 @@ public class ChaseEnemy : MonoBehaviour, ISteering
     }
     private NodeState MoveToPoint()
     {
-        if (_path == null || _path.Count == 0)
-            return NodeState.Failure;
+        if (_path != null && _path.Count > 0)
+        {
+            IPathNode currentNode = _path[0];
+            Vector3 targetPos = currentNode.Position;
+            targetPos.y = transform.position.y;
 
-        IPathNode currentNode = _path[0];
-        Vector3 targetPos = currentNode.Position;
+            Vector3 dir = (targetPos - transform.position).normalized;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), _rotationSpeed * Time.deltaTime);
+            transform.position += dir * patrolSpeed * Time.deltaTime;
+
+            if (Vector3.Distance(transform.position, targetPos) < 2f)
+                _path.RemoveAt(0);
+
+            return NodeState.Running;
+        }
+
+        return MoveToDestination();
+    }
+    private NodeState MoveToDestination()
+    {
+        Vector3 targetPos = _destination;
         targetPos.y = transform.position.y;
 
         Vector3 dir = (targetPos - transform.position).normalized;
-
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(dir);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, _rotationSpeed * Time.deltaTime);
-
+        Quaternion rot = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, _rotationSpeed * Time.deltaTime);
         transform.position += dir * patrolSpeed * Time.deltaTime;
 
         if (Vector3.Distance(transform.position, targetPos) < 2f)
-        {
-            _path.RemoveAt(0);
-            if (_path.Count == 0)
-                return NodeState.Success;
-        }
+            return NodeState.Success;
+
         return NodeState.Running;
     }
     private NodeState Chase()
@@ -192,6 +207,11 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         {
             enemyReference = null;
             steering = Seek(_lastKnownPosition);
+            if (Vector3.Distance(transform.position, _lastKnownPosition) < 1.5f)
+            {
+                _hasLastKnownPosition = false;
+                resetPatrol = true;  
+            }
         }
         else
         {
@@ -216,8 +236,12 @@ public class ChaseEnemy : MonoBehaviour, ISteering
 
         if (Vector3.Distance(transform.position, targetPos) < 1.5f)
         {
-            if (_seeingEnemyRightNow && enemyReference != null)
+            if (_seeingEnemyRightNow && enemyReference != null) 
+            {
                 enemyReference.Kill();
+                resetPatrol = true;
+                return NodeState.Success;
+            }
 
             _velocity = Vector3.zero;
             _hasLastKnownPosition = false;
@@ -241,13 +265,18 @@ public class ChaseEnemy : MonoBehaviour, ISteering
         Vector3 steering = desired - _velocity;
         return Vector3.ClampMagnitude(steering, _maxForce);
     }
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _radius);
         Gizmos.color = Color.yellow;
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, _angle / 2, 0) * transform.forward * _radius);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -_angle / 2, 0) * transform.forward * _radius);
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawLine(transform.position, _destination);
     }
     public void Kill() { }
 }

@@ -55,7 +55,7 @@ public class ChaseLineOfSight : MonoBehaviour
         return target != null;
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Color myColor = Color.blue;
         myColor.a = 0.5f;
