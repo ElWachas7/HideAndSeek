@@ -240,6 +240,11 @@ public class ChaseEnemy : MonoBehaviour, ISteering
             {
                 enemyReference.Kill();
                 resetPatrol = true;
+                _velocity = Vector3.zero;
+                _hasLastKnownPosition = false;
+                _seeingEnemyRightNow = false;
+                _path = new List<IPathNode>(); 
+                _destination = Vector3.zero;
                 return NodeState.Success;
             }
 
