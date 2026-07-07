@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ObstacleAvoidance : MonoBehaviour
+public class ObstacleAvoidance
 {
     Transform _entity; // transform de la entidad que usa este obstacle avoidance
     float _radius; // radio del cono de deteccion de obstaculos

@@ -27,6 +27,11 @@ public class PriorityQueue<TData>
     }
     public void Enqueue(Tuple<TData, float> dp)
     {
+        if (dp == null || dp.Item1 == null)
+        {
+            UnityEngine.Debug.LogWarning("¡Se intentó agregar un nodo NULL a la PriorityQueue!");
+            return;
+        }
         int currentIndex;
         int parentIndex;
 

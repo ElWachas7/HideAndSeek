@@ -86,7 +86,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
             }
         }
     }
-
     private bool IsTargetOnLOS() // chequea si en el Line of sight del enemigo (en sus 3 variables) logra detectar al Chasing enemy
     {
         if(target == null) 
@@ -99,7 +98,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
         }
         return false;
     }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -112,7 +110,6 @@ public class HidingEnemy : MonoBehaviour, ISteering
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, obsAngle / 2, 0) * transform.forward * obsRadius);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -obsAngle / 2, 0) * transform.forward * obsRadius);
     }
-
     public void Kill() // cuando el enemigo colisiona con el, es destruido
     {
         GameManager.Instance.UnregisterEnemy();
