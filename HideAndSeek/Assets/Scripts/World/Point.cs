@@ -8,5 +8,6 @@ public class Point : MonoBehaviour
     {
         _position = transform.position;
         GameManager.Instance.AddPoint(_position, _chance);
+        //Destroy(gameObject);
     }
 }
